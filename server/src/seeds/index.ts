@@ -1,4 +1,4 @@
-import Movie from '../models';
+import { Movie } from '../models/movies';
 
 
 const movieSeed = async () => {
