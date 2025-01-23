@@ -1,46 +1,55 @@
-import { Router } from 'express';
-import { Watchlist } from '../../models/watchList';
+import express from 'express';
+import type { Request, Response } from 'express';
+import { Watchlist } from '../../models/watchList.js';
 
-const watchlistRouter = Router();
+const watchListRouter = express.Router();
 
-// GET all items in the watchlist
-watchlistRouter.get('/', async (_req, res) => {
+// GET all movies in the watchlist
+watchListRouter.get('/', async (_req: Request, res: Response) => {
   try {
-    const watchlist = await Watchlist.findAll(); // Fetch all watchlist items
-    res.status(200).json(watchlist);
+    const watchlistMovies = await Watchlist.findAll();
+    res.status(200).json(watchlistMovies);
   } catch (error) {
-    console.error('Error fetching watchlist:', error);
-    res.status(500).json({ message: 'Failed to fetch watchlist items.' });
+    console.error('Error fetching watchlist movies:', error);
+    res.status(500).json({ message: 'Failed to fetch watchlist movies.' });
   }
 });
 
-// POST a new item to the watchlist
-watchlistRouter.post('/', async (req, res) => {
+// POST a new movie to the watchlist
+watchListRouter.post('/', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { movieId } = req.body; // Assuming a movieId is sent
-    const newWatchlistItem = await Watchlist.create({ movieId });
-    res.status(201).json(newWatchlistItem);
+    const { movieId } = req.body;
+
+    // Validate that movieId is provided
+    if (!movieId) {
+      res.status(400).json({ message: 'movieId is required.' });
+      return;
+    }
+
+    // Create a new entry in the "Watchlist" table
+    const newWatchlistMovie = await Watchlist.create({ movieId });
+    res.status(201).json(newWatchlistMovie);
   } catch (error) {
-    console.error('Error adding to watchlist:', error);
-    res.status(500).json({ message: 'Failed to add item to watchlist.' });
+    console.error('Error adding to Watchlist:', error);
+    res.status(500).json({ message: 'Failed to add the movie to Watchlist.' });
   }
 });
 
-// DELETE an item from the watchlist by its ID
-watchlistRouter.delete('/:id', async (req, res) => {
+// DELETE a movie from the watchlist
+watchListRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const deleted = await Watchlist.destroy({ where: { id } });
 
-    if (deleted) {
-      res.status(200).json({ message: 'Item removed from watchlist.' });
-    } else {
-      res.status(404).json({ message: 'Item not found.' });
+    const deleted = await Watchlist.destroy({ where: { id } });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Movie not found in Watchlist.' });
     }
+
+    return res.status(200).json({ message: 'Movie successfully removed from Watchlist.' });
   } catch (error) {
-    console.error('Error deleting from watchlist:', error);
-    res.status(500).json({ message: 'Failed to delete item from watchlist.' });
+    console.error('Error deleting from Watchlist:', error);
+    return res.status(500).json({ message: 'Failed to remove the movie from Watchlist.' });
   }
 });
 
-export default watchlistRouter;
+export default watchListRouter;

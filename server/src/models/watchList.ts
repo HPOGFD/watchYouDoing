@@ -1,11 +1,7 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 
-
 class Watchlist extends Model {
-  static initModel(_sequelize: Sequelize) {
-    throw new Error('Method not implemented.');
-  }
-  public movieId!: number;
+  public movieId!: number; // Refers to the ID of a movie in the Movie model
 }
 
 // Initialize model

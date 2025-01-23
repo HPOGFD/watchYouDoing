@@ -1,45 +1,53 @@
-import { Router } from 'express';
-import { SeenIt } from '../../models/seenIt';
+import express from 'express';
+import type { Request, Response } from 'express';
+import { SeenIt } from '../../models/seenIt.js';
 
-const seenItRouter = Router();
+const seenItRouter = express.Router();
 
-// GET all items in SeenIt list
-seenItRouter.get('/', async (_req, res) => {
+// GET all seen movies
+seenItRouter.get('/', async (_req: Request, res: Response) => {
   try {
-    const seenIt = await SeenIt.findAll(); // Fetch all items from SeenIt
-    res.status(200).json(seenIt);
+    const seenMovies = await SeenIt.findAll();
+    res.status(200).json(seenMovies);
   } catch (error) {
-    console.error('Error fetching SeenIt list:', error);
-    res.status(500).json({ message: 'Failed to fetch SeenIt list.' });
+    console.error('Error fetching seen movies:', error);
+    res.status(500).json({ message: 'Failed to fetch seen movies.' });
   }
 });
 
-// POST a new item to SeenIt
-seenItRouter.post('/', async (req, res) => {
+// POST a new movie to "SeenIt"
+seenItRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const { movieId } = req.body; // Assuming a movieId is sent
-    const newSeenItItem = await SeenIt.create({ movieId });
-    res.status(201).json(newSeenItItem);
+    const { movieId } = req.body;
+
+    // Validate that the movieId is provided
+    if (!movieId) {
+      return res.status(400).json({ message: 'movieId is required.' });
+    }
+
+    // Create a new entry in the "SeenIt" table
+    const newSeenMovie = await SeenIt.create({ movieId });
+    return res.status(201).json(newSeenMovie);
   } catch (error) {
     console.error('Error adding to SeenIt:', error);
-    res.status(500).json({ message: 'Failed to add item to SeenIt.' });
+    return res.status(500).json({ message: 'Failed to add the movie to SeenIt.' });
   }
 });
 
-// DELETE an item from SeenIt list by its ID
-seenItRouter.delete('/:id', async (req, res) => {
+// DELETE a movie from "SeenIt"
+seenItRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const deleted = await SeenIt.destroy({ where: { id } });
 
-    if (deleted) {
-      res.status(200).json({ message: 'Item removed from SeenIt.' });
-    } else {
-      res.status(404).json({ message: 'Item not found in SeenIt.' });
+    const deleted = await SeenIt.destroy({ where: { id } });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Movie not found in SeenIt.' });
     }
+
+    return res.status(200).json({ message: 'Movie successfully removed from SeenIt.' });
   } catch (error) {
     console.error('Error deleting from SeenIt:', error);
-    res.status(500).json({ message: 'Failed to delete item from SeenIt.' });
+    return res.status(500).json({ message: 'Failed to remove the movie from SeenIt.' });
   }
 });
 
