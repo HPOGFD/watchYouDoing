@@ -1,54 +1,57 @@
-import express from 'express';
-import type { Request, Response } from 'express';
-import { SeenIt } from '../../models/seen.js';
+import { Router } from 'express';
+import { Movie } from '../../models/movie'; // Ensure your Movie model is imported
+import { SeenIt } from '../../models/seen'; // Ensure your SeenIt model is imported
 
-const seenItRouter = express.Router();
+const seenRouter = Router();
 
-// GET all seen movies
-seenItRouter.get('/', async (_req: Request, res: Response) => {
-  try {
-    const seenMovies = await SeenIt.findAll();
-    res.status(200).json(seenMovies);
-  } catch (error) {
-    console.error('Error fetching seen movies:', error);
-    res.status(500).json({ message: 'Failed to fetch seen movies.' });
-  }
-});
+// GET /seen - Retrieve all movies marked as 'seen'
+seenRouter.get('/', async (_req, res) => {
+    try {
+        // Retrieve movies with status "seen"
+        const seenMovies = await Movie.findAll({
+            where: { status: 'seen' },
+        });
 
-// POST a new movie to "SeenIt"
-seenItRouter.post('/', async (req: Request, res: Response) => {
-  try {
-    const { movieId } = req.body;
+        if (seenMovies.length === 0) {
+            return res.status(404).json({ message: 'No seen movies found' });
+        }
 
-    // Validate that the movieId is provided
-    if (!movieId) {
-      return res.status(400).json({ message: 'movieId is required.' });
+        // Respond with the list of seen movies
+        return res.status(200).json({ seenMovies });
+    } catch (error) {
+        console.error('Error retrieving seen movies:', error);
+        return res.status(500).json({ message: 'Server error. Could not retrieve seen movies.' });
     }
-
-    // Create a new entry in the "SeenIt" table
-    const newSeenMovie = await SeenIt.create({ movieId });
-    return res.status(201).json(newSeenMovie);
-  } catch (error) {
-    console.error('Error adding to SeenIt:', error);
-    return res.status(500).json({ message: 'Failed to add the movie to SeenIt.' });
-  }
 });
 
-// DELETE a movie from "SeenIt"
-seenItRouter.delete('/:id', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
+// POST /seen - Mark a movie as seen by adding its ID
+seenRouter.post('/', async (req, res) => {
+    try {
+        const { movieId } = req.body;
 
-    const deleted = await SeenIt.destroy({ where: { id } });
-    if (!deleted) {
-      return res.status(404).json({ message: 'Movie not found in SeenIt.' });
+        // Make sure movieId is provided
+        if (!movieId) {
+            return res.status(400).json({ message: 'Movie ID is required' });
+        }
+
+        // Check if movie exists
+        const movie = await Movie.findByPk(movieId);
+        if (!movie) {
+            return res.status(404).json({ message: 'Movie not found' });
+        }
+
+        // Create a new SeenIt record for this movie
+        await SeenIt.create({ movieId });
+
+        // Update the movie status to 'seen'
+        movie.status = 'seen';
+        await movie.save();
+
+        return res.status(201).json({ message: 'Movie marked as seen' });
+    } catch (error) {
+        console.error('Error marking movie as seen:', error);
+        return res.status(500).json({ message: 'Server error. Could not mark movie as seen' });
     }
-
-    return res.status(200).json({ message: 'Movie successfully removed from SeenIt.' });
-  } catch (error) {
-    console.error('Error deleting from SeenIt:', error);
-    return res.status(500).json({ message: 'Failed to remove the movie from SeenIt.' });
-  }
 });
 
-export default seenItRouter;
+export default seenRouter;
