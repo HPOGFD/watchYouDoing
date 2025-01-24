@@ -1,13 +1,13 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import { Watchlist } from '../../models/watched.js';
+import { WatchList } from '../../models/watched.js';
 
 const watchListRouter = express.Router();
 
 // GET all movies in the watchlist
 watchListRouter.get('/', async (_req: Request, res: Response) => {
   try {
-    const watchlistMovies = await Watchlist.findAll();
+    const watchlistMovies = await WatchList.findAll();
     res.status(200).json(watchlistMovies);
   } catch (error) {
     console.error('Error fetching watchlist movies:', error);
@@ -27,7 +27,7 @@ watchListRouter.post('/', async (req: Request, res: Response): Promise<void> => 
     }
 
     // Create a new entry in the "Watchlist" table
-    const newWatchlistMovie = await Watchlist.create({ movieId });
+    const newWatchlistMovie = await WatchList.create({ movieId });
     res.status(201).json(newWatchlistMovie);
   } catch (error) {
     console.error('Error adding to Watchlist:', error);
@@ -40,7 +40,7 @@ watchListRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const deleted = await Watchlist.destroy({ where: { id } });
+    const deleted = await WatchList.destroy({ where: { id } });
     if (!deleted) {
       return res.status(404).json({ message: 'Movie not found in Watchlist.' });
     }

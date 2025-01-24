@@ -1,21 +1,32 @@
-// seeds/seenItSeed.js
-const SeenIt = require('../models/seenit');  // Adjust path to your SeenIt model
-const MovieIndexModel = require('../models/index');   // Adjust path to your Index model
-// const User = require('../models/user');  // Uncomment if you're using a user model
+import { SeenIt } from '../models/seen.js';
 
-module.exports = async () => {
-  // Assuming you have a specific user ID for '1'
-  // Modify this to reflect actual user retrieval if needed
+export const seedSeenMovies = async () => {
+  try {
+    // Seed the SeenIt data
+    await SeenIt.bulkCreate([
+      {
+        movieId: 1,
+        viewedDate: new Date('2024-01-01'),
+        rating: 8,
+        comment: 'Great movie, loved the plot!'
+      },
+      {
+        movieId: 2,
+        viewedDate: new Date('2024-01-10'),
+        rating: 6,
+        comment: 'Good movie, but a bit slow at times.'
+      },
+      {
+        movieId: 3,
+        viewedDate: new Date('2024-02-15'),
+        rating: 9,
+        comment: 'An excellent movie with great performances.'
+      }
+    ]);
 
-  const movieDarkKnight = await MovieIndexModel.findOne({ where: { title: 'The Dark Knight' } });
-
-  // In this example, I'm hardcoding the user ID to '1'
-  await SeenIt.bulkCreate([
-    {
-      userId: 1,  // Replace with actual user ID
-      movieId: movieDarkKnight.id,
-    },
-  ]);
-
-  console.log('SeenIt has been seeded!');
+    console.log('----- SEEN MOVIES SEEDED -----');
+  } catch (error) {
+    console.error('Error seeding SeenIt data:', error);
+  }
 };
+

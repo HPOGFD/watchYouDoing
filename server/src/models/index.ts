@@ -1,7 +1,7 @@
 import sequelize from '../config/connection';
 import { Movie, initModel as initMovieModel } from './movie';
 import { SeenIt, initModel as initSeenItModel } from './seen';
-import { Watchlist, initModel as initWatchlistModel } from './watched';
+import { WatchList, initModel as initWatchlistModel } from './watched';
 
 // Initialize all models with the sequelize instance
 initMovieModel(sequelize);
@@ -14,7 +14,7 @@ Movie.hasMany(SeenIt, { foreignKey: 'movieId' });
 SeenIt.belongsTo(Movie, { foreignKey: 'movieId', as: 'seenMovie' });
 
 // Movie has many Watchlist records
-Movie.hasMany(Watchlist, { foreignKey: 'movieId' });
-Watchlist.belongsTo(Movie, { foreignKey: 'movieId', as: 'watchlistMovie' });
+Movie.hasMany(WatchList, { foreignKey: 'movieId' });
+WatchList.belongsTo(Movie, { foreignKey: 'movieId', as: 'watchlistMovie' });
 
-export { sequelize, Movie, SeenIt, Watchlist };
+export { sequelize, Movie, SeenIt, WatchList };
