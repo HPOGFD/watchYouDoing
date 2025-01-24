@@ -1,7 +1,10 @@
-import { SeenIt } from '../models/seen.js';
+import { SeenIt, initModel } from '../models/seen.js';
+import sequelize from '../config/connection.js';
+
+// Initialize the model with the sequelize instance
+initModel(sequelize);
 
 export const seedSeenMovies = async () => {
-
     await SeenIt.bulkCreate([
       {
         movieId: 1,
@@ -21,8 +24,7 @@ export const seedSeenMovies = async () => {
         rating: 9,
         comment: 'An excellent movie with great performances.'
       }
-    ]);
-
-  
+    ], { 
+      validate: true 
+    });
 };
-

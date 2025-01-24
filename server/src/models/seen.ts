@@ -1,10 +1,19 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { Model, DataTypes, Sequelize,  } from 'sequelize';
 
-class SeenIt extends Model {
-  public movieId!: number; // Refers to the ID of a movie in the Movie model
+interface SeenItAttributes {
+  movieId: number;
+  viewedDate: Date;
+  rating: number;
+  comment?: string;
 }
 
-// Initialize model
+class SeenIt extends Model<SeenItAttributes, Omit<SeenItAttributes, 'id'>> {
+  public movieId!: number;
+  public viewedDate!: Date;
+  public rating!: number;
+  public comment?: string;
+}
+
 const initModel = (sequelizeInstance: Sequelize) => {
   SeenIt.init(
     {
@@ -12,6 +21,18 @@ const initModel = (sequelizeInstance: Sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      viewedDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      rating: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      comment: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      }
     },
     {
       sequelize: sequelizeInstance,

@@ -41,7 +41,7 @@ seenRouter.post('/', async (req, res) => {
         }
 
         // Create a new SeenIt record for this movie
-        await SeenIt.create({ movieId });
+        await SeenIt.create({ movieId, viewedDate: new Date(), rating: 5 });
 
         // Update the movie status to 'seen'
         movie.status = 'seen';
