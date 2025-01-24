@@ -1,8 +1,7 @@
 import { SeenIt } from '../models/seen.js';
 
 export const seedSeenMovies = async () => {
-  try {
-    // Seed the SeenIt data
+
     await SeenIt.bulkCreate([
       {
         movieId: 1,
@@ -24,9 +23,6 @@ export const seedSeenMovies = async () => {
       }
     ]);
 
-    console.log('----- SEEN MOVIES SEEDED -----');
-  } catch (error) {
-    console.error('Error seeding SeenIt data:', error);
-  }
+  
 };
 
