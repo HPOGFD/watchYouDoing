@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import movieRouter from './moviesRoute';
-import watchlistRouter from './watchedlistRoute';
-import seenItRouter from './seenRoute';
+import movieRouter from './moviesRoute.js';
+import watchlistRouter from './watchedlistRoute.js';
+import seenItRouter from './seenRoute.js';
 
 const router = Router();
 

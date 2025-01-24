@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { Movie } from '../../models/movie'; // Ensure your Movie model is imported
-import { WatchList } from '../../models/watched'; // Ensure your WatchList model is imported
+import { Movie } from '../../models/movie.js'; // Ensure your Movie model is imported
+import { WatchList } from '../../models/watched.js'; // Ensure your WatchList model is imported
 
 const watchlistRouter = Router();
 

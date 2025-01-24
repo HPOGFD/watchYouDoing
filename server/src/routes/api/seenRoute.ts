@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { Movie } from '../../models/movie'; // Ensure your Movie model is imported
-import { SeenIt } from '../../models/seen'; // Ensure your SeenIt model is imported
+import { Movie } from '../../models/movie.js'; // Ensure your Movie model is imported
+import { SeenIt } from '../../models/seen.js'; // Ensure your SeenIt model is imported
 
 const seenRouter = Router();
 
