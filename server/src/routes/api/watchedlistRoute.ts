@@ -1,6 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import { Watchlist } from '../../models/watchList.js';
+import { Watchlist } from '../../models/watched.js';
 
 const watchListRouter = express.Router();
 

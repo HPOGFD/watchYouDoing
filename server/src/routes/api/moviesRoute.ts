@@ -1,6 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import { Movie } from '../../models/movies.js';
+import { Movie } from '../../models/movie.js';
 
 const movieRouter = express.Router(); // Correct variable name
 
