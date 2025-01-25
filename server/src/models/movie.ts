@@ -6,7 +6,7 @@ interface MovieAttributes {
   description: string;
   releaseDate: string;
   streamingStatus: string;
-  status: 'seen' | 'watchlist'; // Adding status explicitly as a field of the type 'MovieAttributes'
+  status: 'seen' | 'watchlist';
 }
 
 class Movie extends Model<MovieAttributes> implements MovieAttributes {
@@ -15,9 +15,7 @@ class Movie extends Model<MovieAttributes> implements MovieAttributes {
   public description!: string;
   public releaseDate!: string;
   public streamingStatus!: string;
-  public status!: 'seen' | 'watchlist'; // Explicitly define status type as 'seen' or 'watchlist'
-
-  static initModel: any;
+  public status!: 'seen' | 'watchlist';
 }
 
 // Initialize model

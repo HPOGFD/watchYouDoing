@@ -1,7 +1,7 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 
 class WatchList extends Model {
-  public movieId!: number; // Refers to the ID of a movie in the Movie model
+  movieId!: number;
 }
 
 // Initialize model
@@ -11,11 +11,15 @@ const initModel = (sequelizeInstance: Sequelize) => {
       movieId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          model: 'Movies',
+          key: 'id',
+        },
       },
     },
     {
       sequelize: sequelizeInstance,
-      modelName: 'Watchlist',
+      modelName: 'WatchList',
     }
   );
 };

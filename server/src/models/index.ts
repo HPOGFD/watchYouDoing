@@ -1,7 +1,7 @@
-import sequelize from '../config/connection';
-import { Movie, initModel as initMovieModel } from './movie';
-import { SeenIt, initModel as initSeenItModel } from './seen';
-import { WatchList, initModel as initWatchlistModel } from './watched';
+import sequelize from '../config/connection.js';
+import { Movie, initModel as initMovieModel } from './movie.js';
+import { SeenIt, initModel as initSeenItModel } from './seen.js';
+import { WatchList, initModel as initWatchlistModel } from './watchlist.js';
 
 // Initialize all models with the sequelize instance
 initMovieModel(sequelize);

@@ -1,30 +1,27 @@
-import { SeenIt, initModel } from '../models/seen.js';
-import sequelize from '../config/connection.js';
-
-// Initialize the model with the sequelize instance
-initModel(sequelize);
+import { SeenIt } from '../models/index.js';
 
 export const seedSeenMovies = async () => {
-    await SeenIt.bulkCreate([
+  await SeenIt.bulkCreate(
+    [
       {
         movieId: 1,
         viewedDate: new Date('2024-01-01'),
-        rating: 8,
-        comment: 'Great movie, loved the plot!'
+        rating: 9,
+        comment: 'Great movie!',
       },
       {
         movieId: 2,
         viewedDate: new Date('2024-01-10'),
-        rating: 6,
-        comment: 'Good movie, but a bit slow at times.'
+        rating: 9,
+        comment: 'Good',
       },
       {
         movieId: 3,
         viewedDate: new Date('2024-02-15'),
         rating: 9,
-        comment: 'An excellent movie with great performances.'
-      }
-    ], { 
-      validate: true 
-    });
+        comment: 'An excellent .',
+      },
+    ],
+    { individualHooks: true } // Applies model-specific hooks to each item
+  );
 };
