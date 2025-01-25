@@ -17,7 +17,7 @@ export const seedMovies = async () => {
         description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
         releaseDate: '1994-09-23',
         streamingStatus: 'Available',
-        status: 'seen'
+        status: 'watchlist'
       },
       {
         title: 'The Dark Knight',

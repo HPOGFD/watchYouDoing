@@ -1,18 +1,16 @@
+
 import { WatchList } from '../models/index.js';
 
 export const seedWatchedList = async () => {
   await WatchList.bulkCreate(
     [
       {
-        movieId: 1,
-      },
-      {
         movieId: 2,
-      },
-      {
-        movieId: 3,
-      },
+        dateAdded: new Date('2025-01-25'),
+        priority: 'Medium',
+        notes: 'Classic drama, need to watch'
+      }
     ],
-    { individualHooks: true } // Ensures hooks are applied to each entry
+    { individualHooks: true }
   );
 };
