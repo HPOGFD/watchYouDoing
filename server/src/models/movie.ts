@@ -1,13 +1,21 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 
+interface MovieAttributes {
+  title: string;
+  genre: string;
+  description: string;
+  releaseDate: string;
+  streamingStatus: string;
+  status: 'seen' | 'watchlist';
+}
 
-class Movie extends Model {
+class Movie extends Model<MovieAttributes> implements MovieAttributes {
   public title!: string;
   public genre!: string;
   public description!: string;
   public releaseDate!: string;
   public streamingStatus!: string;
-  static initModel: any;
+  public status!: 'seen' | 'watchlist';
 }
 
 // Initialize model
@@ -32,6 +40,10 @@ const initModel = (sequelizeInstance: Sequelize) => {
       },
       streamingStatus: {
         type: DataTypes.STRING,
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.ENUM('seen', 'watchlist'),
         allowNull: false,
       },
     },

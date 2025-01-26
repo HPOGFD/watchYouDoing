@@ -1,31 +1,31 @@
-import Movie from '../models';
+import { seedMovies } from './movie-seeds.js';
+import { seedSeenMovies } from './seen-seeds.js';
+import { seedWatchedList } from './watchlist-seeds.js';
+import sequelize from '../config/connection.js';
 
+const seedAll = async (): Promise<void> => {
+  try {
+    // Force sync to reset tables (drops existing ones)
+    await sequelize.sync({ force: true });
+    console.log('\n----- DATABASE SYNCED -----\n');
+    
+    // Seed the Movies table first
+    await seedMovies();
+    console.log('\n----- MOVIES SEEDED -----\n');
 
-const movieSeed = async () => {
-  await Movie.bulkCreate([
-    {
-      title: 'Inception',
-      genre: 'Sci-Fi',
-      description: 'A skilled thief is given a chance at redemption if he can successfully perform an inception.',
-      releaseDate: '2010-07-16',
-      streamingStatus: 'Available on Netflix',
-    },
-    {
-      title: 'The Matrix',
-      genre: 'Action',
-      description: 'A hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
-      releaseDate: '1999-03-31',
-      streamingStatus: 'Available on HBO Max',
-    },
-    {
-      title: 'The Dark Knight',
-      genre: 'Action',
-      description: 'When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.',
-      releaseDate: '2008-07-18',
-      streamingStatus: 'Available on Disney+',
-    },
-  ]);
-  console.log('Movies seeded!');
+    // Seed the SeenIts table
+    await seedSeenMovies();
+    console.log('\n----- SEEN SEEDED -----\n');
+    
+    // Seed the WatchList table
+    await seedWatchedList();
+    console.log('\n----- WATCHLIST SEEDED -----\n');
+    
+    process.exit(0);
+  } catch (error) {
+    console.error('Error seeding database:', error);
+    process.exit(1);
+  }
 };
 
-export default movieSeed;
+seedAll();
