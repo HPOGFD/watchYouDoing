@@ -1,12 +1,17 @@
 import { MovieData } from "../utils/interfaces/movieData";
+import * as dotenv from 'dotenv';
 
 const searchMoviesAPI = async (movieTitle: string): Promise<MovieData> => {
-  const response = await fetch(`https://www.omdbapi.com/?t=${movieTitle}&apikey=YOUR_API_KEY`);
+  
+dotenv.config();
+
+const API_KEY = process.env.API_KEY;
+  const response = await fetch(`https://www.omdbapi.com/?t=${movieTitle}&apikey=${API_KEY}`);
   const data = await response.json();
   if (!response.ok) throw new Error(data.Error);
 
   return {
-    id: data.imdbID, // Assuming the id is the imdbID from the API response
+    id: data.imdbID,
     Title: data.Title,
     genre: data.Genre,
     description: data.Plot,
