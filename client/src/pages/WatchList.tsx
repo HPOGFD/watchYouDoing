@@ -1,66 +1,85 @@
-import type React from 'react';
-import { useEffect, useState } from 'react';
-import FilmsToWatchList from '../components/FilmsToWatchList';
-import type Film from '../utils/interfaces/Film.interface';
+import { useState, useEffect } from 'react';
+import { MovieData } from '../utils/interfaces/movieData';
+import { retrieveWatchlistMovies } from '../api/watchlist';
+import FilmCard from '../components/movieCard';
 
-const WatchList = () => {
-  const [filmsToWatch, setFilmsToWatch] = useState<Film[]>([]);
+const Watchlist = () => {
+  const [watchlistMovies, setWatchlistMovies] = useState<MovieData[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const removeFromStorage = (
-    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-    currentlyOnWatchList: boolean | null | undefined,
-    currentlyOnSeenItList: boolean | null | undefined,
-    title: string | null
-  ) => {
-    e.preventDefault();
-    if (currentlyOnWatchList) {
-      let parsedFilmsToWatch: Film[] = [];
-
-      const storedFilmsToWatch = localStorage.getItem('filmsToWatch');
-      if (typeof storedFilmsToWatch === 'string') {
-        parsedFilmsToWatch = JSON.parse(storedFilmsToWatch);
+  useEffect(() => {
+    const fetchWatchlistMovies = async () => {
+      try {
+        const movies = await retrieveWatchlistMovies();
+        setWatchlistMovies(movies);
+      } catch (err) {
+        setError('Failed to fetch watchlist movies');
       }
-      parsedFilmsToWatch = parsedFilmsToWatch.filter(
-        (film) => film.Title !== title
-      );
-      setFilmsToWatch(parsedFilmsToWatch);
-      localStorage.setItem('filmsToWatch', JSON.stringify(parsedFilmsToWatch));
-    } else if (currentlyOnSeenItList) {
-      let parsedAlreadySeenFilms: Film[] = [];
-      const storedAlreadySeenFilms = localStorage.getItem('alreadySeenFilms');
-      if (typeof storedAlreadySeenFilms === 'string') {
-        parsedAlreadySeenFilms = JSON.parse(storedAlreadySeenFilms);
+    };
+
+    fetchWatchlistMovies();
+  }, []);
+
+  const addToSeenItList = async (movieId: string | number) => {
+    try {
+      const response = await fetch('/api/seen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: movieId }),
+      });
+
+      if (response.ok) {
+        setWatchlistMovies(watchlistMovies.filter(movie => movie.id !== movieId));
+        console.log('Movie added to seen list!');
+      } else {
+        throw new Error('Error adding movie to seen list');
       }
-      parsedAlreadySeenFilms = parsedAlreadySeenFilms.filter(
-        (film) => film.Title !== title
-      );
-      localStorage.setItem(
-        'alreadySeenFilms',
-        JSON.stringify(parsedAlreadySeenFilms)
-      );
+    } catch (error) {
+      console.error('Error in addToSeenItList:', error);
     }
   };
 
-  useEffect(() => {
-    const parsedFilmsToWatch = JSON.parse(
-      localStorage.getItem('filmsToWatch') as string
-    );
-    setFilmsToWatch(parsedFilmsToWatch);
-  }, []);
+  const removeFromWatchlist = async (title: string) => {
+    try {
+      const response = await fetch(`/api/watchlist/${title}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setWatchlistMovies(watchlistMovies.filter(movie => movie.Title !== title));
+        console.log('Movie removed from watchlist!');
+      } else {
+        throw new Error('Error removing movie from watchlist');
+      }
+    } catch (error) {
+      console.error('Error in removeFromWatchlist:', error);
+    }
+  };
 
   return (
-    <>
-      <h1 className='pageHeader'>Watch List</h1>
-      {(!filmsToWatch?.length || filmsToWatch?.length === 0) ? (
-        <h1 style={{ margin: '16px 0' }}>Add films to your watchlist.</h1>
+    <section id="watchlistSection">
+      <h1>Your Watchlist</h1>
+      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      
+      {watchlistMovies.length === 0 ? (
+        <p>No movies in your watchlist!</p>
       ) : (
-        <FilmsToWatchList
-          filmsToWatch={filmsToWatch}
-          removeFromStorage={removeFromStorage}
-        />
+        <div className="movie-list">
+          {watchlistMovies.map((movie) => (
+           <FilmCard
+             key={movie.Title}
+             currentFilm={movie}
+             onSeenItList={false}
+             onWatchList={true}
+             addToWatchlist={async () => {}} // This should be empty for watchlist items
+             addToSeenItList={() => addToSeenItList(movie.id)}
+             removeFromStorage={() => removeFromWatchlist(movie.Title)}
+           />
+          ))}
+        </div>
       )}
-    </>
+    </section>
   );
 };
 
-export default WatchList;
+export default Watchlist;
