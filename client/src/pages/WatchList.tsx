@@ -46,7 +46,7 @@ const Watchlist = () => {
       });
 
       if (response.ok) {
-        setWatchlistMovies(watchlistMovies.filter(movie => movie.Title !== title));
+        setWatchlistMovies(watchlistMovies.filter(movie => movie.title !== title));
         console.log('Movie removed from watchlist!');
       } else {
         throw new Error('Error removing movie from watchlist');
@@ -66,15 +66,21 @@ const Watchlist = () => {
       ) : (
         <div className="movie-list">
           {watchlistMovies.map((movie) => (
-           <FilmCard
-             key={movie.Title}
-             currentFilm={movie}
-             onSeenItList={false}
-             onWatchList={true}
-             addToWatchlist={async () => {}} // This should be empty for watchlist items
-             addToSeenItList={() => addToSeenItList(movie.id)}
-             removeFromStorage={() => removeFromWatchlist(movie.Title)}
-           />
+            <FilmCard
+              key={movie.id}
+              movie={movie} // Changed from currentFilm to movie
+              onSeenItList={() => false}
+              onWatchList={() => true}
+              addToWatchlist={() => {}} // No-op for watchlist items
+              addToSeenItList={() => addToSeenItList(movie.id)}
+              removeFromStorage={() => removeFromWatchlist(movie.title)}
+              extraInfo={
+                <> 
+                  {/* Add any additional information you want to display */}
+                  <p>Added to watchlist</p>
+                </>
+              }
+            />
           ))}
         </div>
       )}

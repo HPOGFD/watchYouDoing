@@ -1,61 +1,64 @@
-import type React from 'react';
-import type { MovieData } from '../utils/interfaces/movieData';
+import React from 'react';
+import { SeenData } from '../utils/interfaces/seenData';
+import { MovieData } from '../utils/interfaces/movieData';
 
 interface FilmCardProps {
-  currentFilm: MovieData;
-  onSeenItList: boolean;
-  onWatchList?: boolean; 
-  removeFromStorage: (
-    e: React.MouseEvent<HTMLElement, MouseEvent>,
-    currentlyOnWatchList: boolean | null | undefined,
-    currentlyOnSeenItList: boolean | null | undefined,
-    title: string | null
-  ) => void;
-  addToWatchlist: () => Promise<void>;  // Add this
-  addToSeenItList: () => Promise<void>; // Add this
+  movie: MovieData | SeenData;  // Accept either MovieData or SeenData
+  onSeenItList: () => boolean;
+  onWatchList: () => boolean;
+  addToWatchlist: () => void;
+  addToSeenItList: () => void;
+  removeFromStorage: () => void;
+  extraInfo: JSX.Element;
 }
 
-const FilmCard = ({
-  currentFilm,
+const FilmCard: React.FC<FilmCardProps> = ({
+  movie,
   onSeenItList,
   onWatchList,
+  addToSeenItList,
   removeFromStorage,
-  addToWatchlist,   // Include in destructuring
-  addToSeenItList,  // Include in destructuring
-}: FilmCardProps) => {
-  return (
-    <li>
-      <h3>{currentFilm.Title}</h3>
-      <p>{currentFilm.genre}</p>
-      <p>{currentFilm.description}</p>
-      <p>{currentFilm.releaseDate}</p>
-      <p>{currentFilm.streamingStatus}</p>
+  addToWatchlist,
+  extraInfo
+}) => {
+  // Type guard to check if movie is SeenData
+  const isSeenData = (movie: MovieData | SeenData): movie is SeenData => {
+    return 'movieId' in movie;
+  };
 
-      {onSeenItList && removeFromStorage && (
-        <button
-          onClick={(e) =>
-            removeFromStorage(e, onWatchList, onSeenItList, currentFilm.Title)
-          }
-        >
-          Remove from Seen It List
+  return (
+    <div className="movie-card">
+      <h3>{movie.title}</h3>
+      <p>Genre: {movie.genre}</p>
+      <p>Description: {movie.description}</p>
+      <p>Release Date: {movie.releaseDate}</p>
+      <p>Streaming Status: {movie.streamingStatus}</p>
+      
+      {/* Only show seen-specific data if it's SeenData */}
+      {isSeenData(movie) && (
+        <div>
+          {movie.viewedDate && (
+            <p>Viewed on: {new Date(movie.viewedDate).toLocaleDateString()}</p>
+          )}
+          {movie.rating !== undefined && <p>Rating: {movie.rating}/10</p>}
+          {movie.comment && <p>Comment: {movie.comment}</p>}
+        </div>
+      )}
+      
+      {extraInfo}
+      
+      {!onSeenItList() && !onWatchList() && (
+        <>
+          <button onClick={addToWatchlist}>Add to Watchlist</button>
+          <button onClick={addToSeenItList}>Add to Seen It List</button>
+        </>
+      )}
+      {(onSeenItList() || onWatchList()) && (
+        <button onClick={removeFromStorage}>
+          Remove from {onSeenItList() ? 'Seen It List' : 'Watchlist'}
         </button>
       )}
-      {onWatchList && removeFromStorage && (
-        <button
-          onClick={(e) =>
-            removeFromStorage(e, onWatchList, onSeenItList, currentFilm.Title)
-          }
-        >
-          Remove from Watchlist
-        </button>
-      )}
-      {!onSeenItList && !onWatchList && (
-        <button onClick={addToWatchlist}>Add to Watchlist</button>
-      )}
-      {!onSeenItList && !onWatchList && (
-        <button onClick={addToSeenItList}>Add to Seen It List</button>
-      )}
-    </li>
+    </div>
   );
 };
 

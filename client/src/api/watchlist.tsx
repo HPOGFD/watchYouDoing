@@ -1,13 +1,22 @@
-import { MovieData } from "../utils/interfaces/movieData";
+import { WatchListData } from "../utils/interfaces/watchlistData";
 
-// Function to retrieve movies from the watchlist
-const retrieveWatchlistMovies = async (): Promise<MovieData[]> => {
-  const response = await fetch("/api/watchlist");
-  const data = await response.json();
+const retrieveWatchlistMovies = async (): Promise<WatchListData[]> => {
+  try {
+    const response = await fetch("/api/watchlist");
+    if (!response.ok) throw new Error("Error fetching watchlist movies!");
 
-  if (!response.ok) throw new Error("Error fetching watchlist movies!");
+    const data = await response.json();
 
-  return data;
+    console.log('Raw data from API:', data);
+    console.log('Data type check:', Array.isArray(data));
+
+    // Optional: You could add some validation here to ensure each item in the array matches WatchListData structure
+
+    return data as WatchListData[];
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
 };
 
 export { retrieveWatchlistMovies };

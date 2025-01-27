@@ -12,7 +12,7 @@ const API_KEY = process.env.API_KEY;
 
   return {
     id: data.imdbID,
-    Title: data.Title,
+    title: data.Title,
     genre: data.Genre,
     description: data.Plot,
     releaseDate: data.Released,

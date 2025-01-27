@@ -1,6 +1,6 @@
 export interface MovieData {
   id: string | number;  // Added the id property for uniqueness
-  Title: string;
+  title: string;
   genre: string;
   description: string;
   releaseDate: string;

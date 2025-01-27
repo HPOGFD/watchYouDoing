@@ -4,7 +4,7 @@ import FilmCard from '../components/movieCard';
 import { MovieData } from '../utils/interfaces/movieData';
 
 const MovieSearch = () => {
-  const [currentFilm, setCurrentFilm] = useState<MovieData>({ id : '', Title: '', genre: '', description: '', releaseDate: '', streamingStatus: '', status: 'watchlist' });
+  const [currentFilm, setCurrentFilm] = useState<MovieData>({ id : '', title: '', genre: '', description: '', releaseDate: '', streamingStatus: '', status: 'watchlist' });
   const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,8 +80,8 @@ const MovieSearch = () => {
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       <FilmCard
         currentFilm={currentFilm}
-        onSeenItList={false}
-        onWatchList={true}
+        onSeenItList={() => false}
+        onWatchList={() => true}
 
         addToSeenItList={addToSeenItList}
         removeFromStorage={removeFromStorage}
