@@ -10,8 +10,7 @@ const router = Router();
 router.get('/', async (_req, res) => {
   try {
     const watchlistMovies = await WatchList.findAll({
-      attributes: ['movieId', 'dateAdded', 'priority', 'notes', 'title', 'genre', 
-                   'description', 'releaseDate', 'streamingStatus'],
+      attributes: ['movieId', 'dateAdded', 'priority', 'notes'],
     });
 
     // Convert Sequelize instances to plain objects
