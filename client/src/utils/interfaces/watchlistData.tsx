@@ -3,6 +3,6 @@ import { MovieData } from './movieData';
 export interface WatchListData extends MovieData {
   movieId: number;
   dateAdded?: Date;
-  priority: 'Low' | 'Medium' | 'High';
+  priority: string;
   notes?: string;
 }

@@ -16,16 +16,15 @@ const WatchlistCard: React.FC<WatchlistCardProps> = ({
 }) => {
   return (
     <div className="watchlist-card border rounded-lg shadow p-4 bg-white">
-      <h3 className="text-lg font-bold mb-2">{movie.title}</h3>
-      <p className="text-sm text-gray-700 mb-1">Genre: {movie.genre}</p>
-      <p className="text-sm text-gray-700 mb-1">Description: {movie.description}</p>
-      <p className="text-sm text-gray-700 mb-1">Release Date: {movie.releaseDate}</p>
-      <p className="text-sm text-gray-700 mb-1">Streaming Status: {movie.streamingStatus}</p>
-      <p className="text-sm text-gray-700 mb-1">Priority: {movie.priority}</p>
+      {movie.title && <h3 className="text-lg font-bold mb-2">{movie.title}</h3>}
+      {movie.genre && <p className="text-sm text-gray-700 mb-1">Genre: {movie.genre}</p>}
+      {movie.description && <p className="text-sm text-gray-700 mb-1">Description: {movie.description}</p>}
+      {movie.releaseDate && <p className="text-sm text-gray-700 mb-1">Release Date: {movie.releaseDate}</p>}
+      {movie.streamingStatus && <p className="text-sm text-gray-700 mb-1">Streaming Status: {movie.streamingStatus}</p>}
+      {movie.priority && <p className="text-sm text-gray-700 mb-1">Priority: {movie.priority}</p>}
       {movie.dateAdded && (
-        <p className="text-sm text-gray-700 mb-1">Date Added: {movie.dateAdded.toLocaleDateString()}</p>
+        <p className="text-sm text-gray-700 mb-1">Date Added: {new Date(movie.dateAdded).toLocaleDateString()}</p>
       )}
-
       {movie.notes && <p className="text-sm text-gray-700 mb-1">Notes: {movie.notes}</p>}
 
       {extraInfo && <div className="extra-info mt-2">{extraInfo}</div>}

@@ -11,12 +11,14 @@ const Watchlist = () => {
     const fetchWatchlistMovies = async () => {
       try {
         const movies = await retrieveWatchlistMovies();
+        console.log('Watchlist movies:', movies); // Add this line
         setWatchlistMovies(movies);
       } catch (err) {
+        console.error('Error details:', err); // Add this line
         setError('Failed to fetch watchlist movies');
       }
     };
-
+  
     fetchWatchlistMovies();
   }, []);
 
