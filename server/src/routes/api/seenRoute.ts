@@ -9,12 +9,15 @@ const router = Router();
  */
 router.get('/', async (_req, res) => {
   try {
-    // Retrieve all entries from the SeenIt table with the specified fields
     const seenMovies = await SeenIt.findAll({
-      attributes: ['movieId', 'viewedDate', 'rating', 'comment'], // Updated fields
+      attributes: ['movieId', 'viewedDate', 'rating', 'comment'],
     });
 
-    res.status(200).json(seenMovies);
+    // Convert Sequelize instances to plain objects
+    const plainMovies = seenMovies.map(movie => movie.toJSON()); // or movie.get({ plain: true })
+
+    console.log('Fetched seen movies:', plainMovies);
+    res.status(200).json(plainMovies); // Send plain objects
   } catch (error) {
     console.error('Error fetching seen movies:', error);
     res.status(500).json({ error: 'Unable to fetch seen movies' });

@@ -15,7 +15,7 @@ interface FilmCardProps {
 const FilmCard: React.FC<FilmCardProps> = ({
   movie,
   onSeenItList,
-  onWatchList,
+  onWatchList,  
   addToSeenItList,
   removeFromStorage,
   addToWatchlist,
