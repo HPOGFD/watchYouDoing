@@ -2,14 +2,35 @@ import { MovieData } from "../utils/interfaces/movieData";
 import * as dotenv from 'dotenv';
 
 const searchMoviesAPI = async (movieTitle: string): Promise<MovieData> => {
-  
-dotenv.config();
+  // Load environment variables from .env file
+  dotenv.config();
 
-const API_KEY = process.env.API_KEY;
-  const response = await fetch(`https://www.omdbapi.com/?t=${movieTitle}&apikey=${API_KEY}`);
+  // Get the API key from .env
+  const API_KEY = process.env.API_KEY;
+  if (!API_KEY) {
+    throw new Error('API key is missing. Please check your .env file.');
+  }
+
+  // Construct the API URL
+  const url = `https://www.omdbapi.com/?t=${encodeURIComponent(movieTitle)}&apikey=${API_KEY}`;
+
+  // Fetch data from OMDB API
+  const response = await fetch(url);
+
+  // Check if the response is OK
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  // Parse the JSON data
   const data = await response.json();
-  if (!response.ok) throw new Error(data.Error);
 
+  // Check if the API returned an error
+  if (data.Response === 'False') {
+    throw new Error(data.Error || 'Failed to fetch movie data');
+  }
+
+  // Return the formatted movie data
   return {
     id: data.imdbID,
     title: data.Title,

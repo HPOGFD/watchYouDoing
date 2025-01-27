@@ -2,7 +2,10 @@ import { SeenData } from "../utils/interfaces/seenData";
 
 const retrieveSeenMovies = async (): Promise<SeenData[]> => {
   try {
-    const response = await fetch('/api/seen', {
+    const url = '/api/seen'; // Relative URL (will be proxied to http://localhost:3001/api/seen)
+    console.log('Fetching seen movies from:', url);
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -14,6 +17,7 @@ const retrieveSeenMovies = async (): Promise<SeenData[]> => {
     }
 
     const data = await response.json();
+    console.log('API response:', data);
 
     // Validate the response data
     if (!Array.isArray(data)) {
@@ -22,11 +26,10 @@ const retrieveSeenMovies = async (): Promise<SeenData[]> => {
 
     // Basic validation of each movie object
     const validatedData = data.map((movie: Partial<SeenData>) => {
-      // Check required fields from MovieData and SeenData interfaces
       if (!movie.movieId || !movie.viewedDate || !movie.rating || !movie.comment) {
         throw new Error('Invalid movie data: missing required fields');
       }
-      
+
       return movie as SeenData;
     });
 
