@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MovieData } from '../utils/interfaces/movieData';
-import { retrieveWatchlistMovies } from '../api/watchlist';
-import FilmCard from '../components/movieCard';
+import { retrieveWatchlistMovies } from '../api/watchlist'; // Updated import
+import WatchlistCard from '../../src/components/WatchListCard';
 
 const Watchlist = () => {
   const [watchlistMovies, setWatchlistMovies] = useState<MovieData[]>([]);
@@ -66,19 +66,13 @@ const Watchlist = () => {
       ) : (
         <div className="movie-list">
           {watchlistMovies.map((movie) => (
-            <FilmCard
+            <WatchlistCard
               key={movie.id}
-              movie={movie} // Changed from currentFilm to movie
-              onSeenItList={() => false}
-              onWatchList={() => true}
-              addToWatchlist={() => {}} // No-op for watchlist items
+              movie={movie}
+              removeFromWatchlist={() => removeFromWatchlist(movie.title)}
               addToSeenItList={() => addToSeenItList(movie.id)}
-              removeFromStorage={() => removeFromWatchlist(movie.title)}
               extraInfo={
-                <> 
-                  {/* Add any additional information you want to display */}
-                  <p>Added to watchlist</p>
-                </>
+                <p>Added to watchlist</p>
               }
             />
           ))}

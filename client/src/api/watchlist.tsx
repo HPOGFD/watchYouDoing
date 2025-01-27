@@ -1,6 +1,6 @@
-import { MoviesWatchlistData } from "../utils/interfaces/watchlistData";
+import { WatchListData } from "../utils/interfaces/watchlistData";
 
-const retrieveWatchlistMovies = async (): Promise<MoviesWatchlistData[]> => {
+const retrieveWatchlistMovies = async (): Promise<WatchListData[]> => {
   try {
     const response = await fetch("/api/watchlist", {
       method: 'GET',
