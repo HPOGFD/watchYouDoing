@@ -1,40 +1,35 @@
+import React from 'react';
 import { SeenData } from "../utils/interfaces/seenData";
 
-const retrieveSeenMovies = async (): Promise<SeenData[]> => {
-  try {
-    const response = await fetch('/api/seen', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+interface MovieSeenCardProps {
+  movie: SeenData;
+}
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    // Validate the response data
-    if (!Array.isArray(data)) {
-      throw new Error('API response is not an array');
-    }
-
-    // Basic validation of each movie object
-    const validatedData = data.map((movie: Partial<SeenData>) => {
-      // Check required fields from MovieData and SeenData interfaces
-      if (!movie.movieId || !movie.viewedDate || !movie.rating || !movie.comment) {
-        throw new Error('Invalid movie data: missing required fields');
-      }
-      
-      return movie as SeenData;
-    });
-
-    return validatedData;
-  } catch (error) {
-    console.error('Failed to fetch seen movies:', error);
-    throw error;
-  }
+const MovieSeenCard: React.FC<MovieSeenCardProps> = ({ movie }) => {
+  return (
+    <div className="movie-seen-card">
+      <h3>{movie.title}</h3>
+      <p>Movie ID: {movie.movieId}</p>
+      {movie.viewedDate && (
+        <p>Viewed on: {new Date(movie.viewedDate).toLocaleDateString()}</p>
+      )}
+      {movie.rating !== undefined && (
+        <p>Rating: {movie.rating} / 10</p>
+      )}
+      {movie.comment && (
+        <p>Comment: {movie.comment}</p>
+      )}
+      {/* Use type assertion here */}
+      {'posterPath' in movie && (
+        <img 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          src={`https://image.tmdb.org/t/p/w200${(movie as any).posterPath}`} 
+          alt={`${movie.title} poster`}
+        />
+      )}
+    </div>
+  );
 };
 
-export { retrieveSeenMovies };
+
+export default MovieSeenCard;
