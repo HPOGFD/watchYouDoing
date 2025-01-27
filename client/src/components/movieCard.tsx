@@ -3,7 +3,7 @@ import { SeenData } from '../utils/interfaces/seenData';
 import { MovieData } from '../utils/interfaces/movieData';
 
 interface FilmCardProps {
-  movie: MovieData | SeenData;  // Accept either MovieData or SeenData
+  movie: MovieData | SeenData; // Accept either MovieData or SeenData
   onSeenItList: () => boolean;
   onWatchList: () => boolean;
   addToWatchlist: () => void;
@@ -15,11 +15,11 @@ interface FilmCardProps {
 const FilmCard: React.FC<FilmCardProps> = ({
   movie,
   onSeenItList,
-  onWatchList,  
+  onWatchList,
   addToSeenItList,
   removeFromStorage,
   addToWatchlist,
-  extraInfo
+  extraInfo,
 }) => {
   // Type guard to check if movie is SeenData
   const isSeenData = (movie: MovieData | SeenData): movie is SeenData => {
@@ -29,12 +29,18 @@ const FilmCard: React.FC<FilmCardProps> = ({
   return (
     <div className="movie-card">
       <h3>{movie.title}</h3>
-      <p>Genre: {movie.genre}</p>
-      <p>Description: {movie.description}</p>
-      <p>Release Date: {movie.releaseDate}</p>
-      <p>Streaming Status: {movie.streamingStatus}</p>
-      
-      {/* Only show seen-specific data if it's SeenData */}
+
+      {/* Only show MovieData-specific fields if it's MovieData */}
+      {!isSeenData(movie) && (
+        <>
+          <p>Genre: {movie.genre}</p>
+          <p>Description: {movie.description}</p>
+          <p>Release Date: {movie.releaseDate}</p>
+          <p>Streaming Status: {movie.streamingStatus}</p>
+        </>
+      )}
+
+      {/* Only show SeenData-specific fields if it's SeenData */}
       {isSeenData(movie) && (
         <div>
           {movie.viewedDate && (
@@ -44,9 +50,9 @@ const FilmCard: React.FC<FilmCardProps> = ({
           {movie.comment && <p>Comment: {movie.comment}</p>}
         </div>
       )}
-      
+
       {extraInfo}
-      
+
       {!onSeenItList() && !onWatchList() && (
         <>
           <button onClick={addToWatchlist}>Add to Watchlist</button>

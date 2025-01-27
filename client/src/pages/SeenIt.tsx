@@ -1,7 +1,7 @@
 // pages/seen.tsx
 import { useEffect, useState } from 'react';
 import { retrieveSeenMovies } from '../../src/api/seen';
-import FilmCard from '../components/movieCard'; // Changed this line
+import FilmCard from '../components/movieCard'; // Ensure this is the correct import
 import { SeenData } from '../utils/interfaces/seenData';
 
 const SeenPage = () => {
@@ -15,6 +15,7 @@ const SeenPage = () => {
         const movies = await retrieveSeenMovies();
         setSeenMovies(movies);
       } catch (err) {
+        console.error('Error fetching seen movies:', err); // Log the error for debugging
         setError(err instanceof Error ? err.message : 'Failed to fetch movies');
       } finally {
         setIsLoading(false);
@@ -30,15 +31,17 @@ const SeenPage = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {seenMovies.map((movie) => (
-        <FilmCard 
-          key={movie.movieId}  // Changed from movie.id to movie.movieId
-          movie={movie}
+        <FilmCard
+          key={movie.movieId}
+          movie={{
+            ...movie,
+            title: movie.title || `Movie ${movie.movieId}`, // Fallback title if not provided
+          }}
           onSeenItList={() => true}
           onWatchList={() => false}
           addToWatchlist={() => {}}
           addToSeenItList={() => {}}
           removeFromStorage={() => {
-            // Implement remove functionality here
             console.log(`Remove movie ${movie.movieId}`);
           }}
           extraInfo={

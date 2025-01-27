@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { MovieData } from '../utils/interfaces/movieData';
-import { retrieveWatchlistMovies } from '../api/watchlist'; // Updated import
+import { WatchListData } from '../utils/interfaces/watchlistData';
+import { retrieveWatchlistMovies } from '../api/watchlist';
 import WatchlistCard from '../../src/components/WatchListCard';
 
 const Watchlist = () => {
-  const [watchlistMovies, setWatchlistMovies] = useState<MovieData[]>([]);
+  const [watchlistMovies, setWatchlistMovies] = useState<WatchListData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const Watchlist = () => {
     fetchWatchlistMovies();
   }, []);
 
-  const addToSeenItList = async (movieId: string | number) => {
+  const addToSeenItList = async (movieId: number) => {
     try {
       const response = await fetch('/api/seen', {
         method: 'POST',
@@ -29,7 +29,7 @@ const Watchlist = () => {
       });
 
       if (response.ok) {
-        setWatchlistMovies(watchlistMovies.filter(movie => movie.id !== movieId));
+        setWatchlistMovies(watchlistMovies.filter(movie => movie.movieId !== movieId));
         console.log('Movie added to seen list!');
       } else {
         throw new Error('Error adding movie to seen list');
@@ -39,14 +39,14 @@ const Watchlist = () => {
     }
   };
 
-  const removeFromWatchlist = async (title: string) => {
+  const removeFromWatchlist = async (movieId: number) => {
     try {
-      const response = await fetch(`/api/watchlist/${title}`, {
+      const response = await fetch(`/api/watchlist/${movieId}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
-        setWatchlistMovies(watchlistMovies.filter(movie => movie.title !== title));
+        setWatchlistMovies(watchlistMovies.filter(movie => movie.movieId !== movieId));
         console.log('Movie removed from watchlist!');
       } else {
         throw new Error('Error removing movie from watchlist');
@@ -67,12 +67,12 @@ const Watchlist = () => {
         <div className="movie-list">
           {watchlistMovies.map((movie) => (
             <WatchlistCard
-              key={movie.id}
+              key={movie.movieId}
               movie={movie}
-              removeFromWatchlist={() => removeFromWatchlist(movie.title)}
-              addToSeenItList={() => addToSeenItList(movie.id)}
+              removeFromWatchlist={removeFromWatchlist}
+              addToSeenItList={addToSeenItList}
               extraInfo={
-                <p>Added to watchlist</p>
+                <p>Priority: {movie.priority}</p>
               }
             />
           ))}
