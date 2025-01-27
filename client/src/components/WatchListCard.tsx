@@ -25,6 +25,7 @@ const WatchlistCard: React.FC<WatchlistCardProps> = ({
       {movie.dateAdded && (
         <p className="text-sm text-gray-700 mb-1">Date Added: {movie.dateAdded.toLocaleDateString()}</p>
       )}
+
       {movie.notes && <p className="text-sm text-gray-700 mb-1">Notes: {movie.notes}</p>}
 
       {extraInfo && <div className="extra-info mt-2">{extraInfo}</div>}

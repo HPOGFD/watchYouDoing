@@ -12,12 +12,17 @@ const retrieveSeenMovies = async (): Promise<SeenData[]> => {
       },
     });
 
+    // Log the raw response text
+    const rawResponse = await response.text();
+    console.log('Raw API response:', rawResponse);
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json();
-    console.log('API response:', data);
+    // Parse the response as JSON
+    const data = JSON.parse(rawResponse);
+    console.log('Parsed API response:', data);
 
     // Validate the response data
     if (!Array.isArray(data)) {
@@ -35,8 +40,8 @@ const retrieveSeenMovies = async (): Promise<SeenData[]> => {
 
     return validatedData;
   } catch (error) {
-    console.error('Failed to fetch seen movies:', error);
-    throw error;
+    console.error('Error in retrieveSeenMovies:', error);
+    throw error; // Re-throw the error to handle it in the calling function
   }
 };
 
