@@ -79,16 +79,15 @@ const MovieSearch = () => {
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       <FilmCard
-        currentFilm={currentFilm}
+        movie={currentFilm}
         onSeenItList={() => false}
         onWatchList={() => true}
-
         addToSeenItList={addToSeenItList}
         removeFromStorage={removeFromStorage}
         addToWatchlist={addToWatchlist}
+        extraInfo={<></>} // Add an empty JSX element or some additional info if needed
       />
     </>
   );
 };
-
 export default MovieSearch;
