@@ -8,5 +8,6 @@ export interface StreamData {
     status: string;
     poster: string;
     availablePlatforms: string[];
+    
   }
   
