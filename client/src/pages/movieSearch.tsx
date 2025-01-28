@@ -1,7 +1,9 @@
 import { useState, FormEvent } from 'react';
 import { searchMoviesAPI } from '../api/movies';
+import { searchStreamingAvailabilityAPI } from '../api/searchStream'; // Assuming you have this API call
 import FilmCard from '../components/movieCard';
 import { MovieData } from '../utils/interfaces/movieData';
+import { StreamData } from '../utils/interfaces/streamData';
 
 const MovieSearch = () => {
   const [currentFilm, setCurrentFilm] = useState<MovieData>({
@@ -14,6 +16,9 @@ const MovieSearch = () => {
     status: 'watchlist',
     poster: '', 
   });
+  
+  const [streamingData, setStreamingData] = useState<StreamData | null>(null);  // New state for streaming data
+
   const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +31,7 @@ const MovieSearch = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(currentFilm), // Add the movie data to the body
       });
-  
+
       if (!response.ok) {
         throw new Error('Error adding movie to watchlist');
       }
@@ -35,19 +40,23 @@ const MovieSearch = () => {
       console.error('Error in addToWatchlist:', error);
     }
   };
-  
-  
-
 
   const searchForMovieByTitle = async (event: FormEvent, movieTitle: string) => {
     event.preventDefault();
     setLoading(true);
     setError(null);
     console.log('Searching for movie:', movieTitle);
+
     try {
       const data: MovieData = await searchMoviesAPI(movieTitle);
       console.log('Movie data retrieved:', data);
       setCurrentFilm(data);
+
+      // Now search for streaming availability for the same movie
+      const streamingInfo: StreamData = await searchStreamingAvailabilityAPI(movieTitle);
+      console.log('Streaming data retrieved:', streamingInfo);
+      setStreamingData(streamingInfo);
+
     } catch (error) {
       console.error('Error fetching movie data:', error);
       setError('Failed to fetch movie data');
@@ -70,12 +79,23 @@ const MovieSearch = () => {
       </form>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      
+      {/* Render the FilmCard with streaming availability */}
       <FilmCard
         movie={currentFilm}
         onSeenItList={() => false}
         onWatchList={() => true}
         addToWatchlist={addToWatchlist}
-        extraInfo={<></>} // Add an empty JSX element or some additional info if needed
+        extraInfo={
+          streamingData && (
+            <>
+              <p>Streaming availability: {streamingData.streamingStatus}</p>
+              {streamingData.availablePlatforms.length > 0 && (
+                <p>Available on: {streamingData.availablePlatforms.join(', ')}</p>
+              )}
+            </>
+          )
+        }
       />
     </>
   );

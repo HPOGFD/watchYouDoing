@@ -7,7 +7,7 @@ interface FilmCardProps {
   onSeenItList: () => boolean;
   onWatchList: () => boolean;
   addToWatchlist: () => void;
-  extraInfo: JSX.Element;
+  extraInfo: JSX.Element | null;
 }
 
 const FilmCard: React.FC<FilmCardProps> = ({
@@ -39,7 +39,9 @@ const FilmCard: React.FC<FilmCardProps> = ({
         <p>Genre: {movie.genre}</p>
         <p>Description: {movie.description}</p>
         <p>Release Date: {movie.releaseDate}</p>
-        <p>Streaming Status: {movie.streamingStatus}</p>
+        <p style={{ color: 'red' }}>Streaming on: {movie.streamingStatus}</p>
+
+        
       </>
     )}
   
