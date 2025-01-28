@@ -35,9 +35,9 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-const router = Router();
+const Authrouter = Router();
 
 // POST /login - Login a user
-router.post('/login', login);
+Authrouter.post('/login', login);
 
-export default router;
+export default Authrouter;
