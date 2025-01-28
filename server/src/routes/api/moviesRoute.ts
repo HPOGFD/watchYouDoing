@@ -64,5 +64,39 @@ movieRouter.get('/', async (_req: Request, res: Response) => {
   }
 });
 
+// POST route to add a movie to the watchlist
+movieRouter.post('/watchlist/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const movie = await Movie.findByPk(id);
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+    movie.status = 'watchlist';
+    await movie.save();
+    return res.status(200).json({ message: 'Movie added to watchlist', movie });
+  } catch (error) {
+    console.error('Error adding movie to watchlist:', error);
+    return res.status(500).json({ message: 'Failed to add movie to watchlist' });
+  }
+});
+
+// POST route to add a movie to the seen list
+movieRouter.post('/seen', async (req: Request, res: Response) => {
+  try {
+    const movieData = req.body;
+    const movie = await Movie.findByPk(movieData.id);
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+    movie.status = 'seen';
+    await movie.save();
+    return res.status(200).json({ message: 'Movie added to seen list', movie });
+  } catch (error) {
+    console.error('Error adding movie to seen list:', error);
+    return res.status(500).json({ message: 'Failed to add movie to seen list' });
+  }
+});
+
 // Export the router for use in the main app
 export default movieRouter;
