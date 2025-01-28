@@ -31,22 +31,24 @@ const searchMoviesAPI = async (movieTitle: string): Promise<MovieData> => {
       throw new Error(data.Error || 'Failed to fetch movie data');
     }
 
-    // Format and return the movie data
-    const formattedData: MovieData = {
-      id: data.imdbID,
-      title: data.Title,
-      genre: data.Genre,
-      description: data.Plot,
-      releaseDate: data.Released,
-      streamingStatus: data.BoxOffice || "N/A",
-      status: 'watchlist'
-    };
-    console.log('Formatted movie data:', formattedData);
-    return formattedData;
-  } catch (error) {
-    console.error('Error in searchMoviesAPI:', error);
-    throw error;
-  }
+  // Format and return the movie data
+  const formattedData: MovieData = {
+    id: data.imdbID,
+    title: data.Title,
+    genre: data.Genre,
+    description: data.Plot,
+    releaseDate: data.Released,
+    streamingStatus: data.BoxOffice || "N/A",
+    status: 'watchlist',
+    poster: data.Poster // Add the poster URL here
+  };
+  console.log('Formatted movie data:', formattedData);
+  return formattedData;
+
+} catch (error) {
+  console.error('Error fetching movie data:', error);
+  throw error;
+}
 };
 
 export { searchMoviesAPI };

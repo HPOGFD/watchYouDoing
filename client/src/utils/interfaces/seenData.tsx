@@ -5,4 +5,5 @@ export interface SeenData {
   comment?: string;
   title?: string; // Add this
   posterPath?: string; // Add this
+  poster?: string; // Add this
 }

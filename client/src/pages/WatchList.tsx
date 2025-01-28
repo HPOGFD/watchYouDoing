@@ -24,19 +24,37 @@ const Watchlist = () => {
 
   const addToSeenItList = async (movieId: number) => {
     try {
+      // Add loading state if needed
+      // setIsLoading(true);
+  
       const response = await fetch(`/api/move-to-seen/${movieId}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+        },
       });
   
-      if (response.ok) {
-        setWatchlistMovies(watchlistMovies.filter(movie => movie.movieId !== movieId));
-        console.log('Movie added to seen list!');
-      } else {
-        throw new Error('Error adding movie to seen list');
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to add movie to seen list');
       }
+  
+      // Update local state only after successful API call
+      setWatchlistMovies(prevMovies => 
+        prevMovies.filter(movie => movie.movieId !== movieId)
+      );
+  
+      // Optional: Show success message
+      // setSuccessMessage('Movie successfully added to seen list!');
+  
     } catch (error) {
       console.error('Error in addToSeenItList:', error);
+      // Optional: Set error state to show to user
+      // setError(error instanceof Error ? error.message : 'Failed to add movie to seen list');
+    } finally {
+      // Clear any loading state
+      // setIsLoading(false);
     }
   };
   

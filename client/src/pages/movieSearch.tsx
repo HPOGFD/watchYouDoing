@@ -12,6 +12,7 @@ const MovieSearch = () => {
     releaseDate: '',
     streamingStatus: '',
     status: 'watchlist',
+    poster: '', 
   });
   const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(false);
