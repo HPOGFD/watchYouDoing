@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import routes from './routes/index.js';
 // Import the connection object
-import sequelize from './config/connection.js';
+import sequelize from '../src/config/connection';
 
 const app = express();
 const PORT = process.env.PORT || 3001;

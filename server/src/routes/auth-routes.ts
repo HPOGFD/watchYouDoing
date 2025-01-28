@@ -11,7 +11,7 @@ export const login = async (req: Request, res: Response) => {
 
   const user = await User.findOne({
     where: { email },
-  });
+  }); console.log('Database synced');
 
   if (!user) {
     return res.status(401).json({ message: 'Authentication failed' });
