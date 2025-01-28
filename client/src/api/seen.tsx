@@ -45,4 +45,15 @@ const retrieveSeenMovies = async (): Promise<SeenData[]> => {
   }
 };
 
-export { retrieveSeenMovies };
+ const removeSeenMovie = async (movieId: number): Promise<void> => {
+  const response = await fetch(`/api/seen/${movieId}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to remove movie');
+  }
+};
+
+
+export { retrieveSeenMovies, removeSeenMovie };

@@ -1,6 +1,6 @@
 // pages/seen.tsx
 import { useEffect, useState } from 'react';
-import { retrieveSeenMovies } from '../../src/api/seen';
+import { retrieveSeenMovies, removeSeenMovie } from '../../src/api/seen';
 import FilmCard from '../components/movieCard'; // Ensure this is the correct import
 import { SeenData } from '../utils/interfaces/seenData';
 
@@ -25,9 +25,19 @@ const SeenPage = () => {
     fetchMovies();
   }, []);
 
+  const handleRemoveFromStorage = async (movieId: number) => {
+    try {
+      await removeSeenMovie(movieId);
+      setSeenMovies((prev) => prev.filter((movie) => movie.movieId !== movieId));
+      console.log(`Removed movie ${movieId}`);
+    } catch (err) {
+      console.error(`Error removing movie ${movieId}:`, err);
+    }
+  };
+
+  
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {seenMovies.map((movie) => (
@@ -41,9 +51,7 @@ const SeenPage = () => {
           onWatchList={() => false}
           addToWatchlist={() => {}}
           addToSeenItList={() => {}}
-          removeFromStorage={() => {
-            console.log(`Remove movie ${movie.movieId}`);
-          }}
+          removeFromStorage={() => handleRemoveFromStorage(movie.movieId)}
           extraInfo={
             <>
               {movie.viewedDate && (
