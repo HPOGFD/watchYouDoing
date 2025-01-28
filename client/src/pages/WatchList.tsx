@@ -24,12 +24,11 @@ const Watchlist = () => {
 
   const addToSeenItList = async (movieId: number) => {
     try {
-      const response = await fetch('/api/seen', {
+      const response = await fetch(`/api/move-to-seen/${movieId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: movieId }),
       });
-
+  
       if (response.ok) {
         setWatchlistMovies(watchlistMovies.filter(movie => movie.movieId !== movieId));
         console.log('Movie added to seen list!');
@@ -40,6 +39,7 @@ const Watchlist = () => {
       console.error('Error in addToSeenItList:', error);
     }
   };
+  
 
   const removeFromWatchlist = async (movieId: number) => {
     try {
@@ -59,29 +59,36 @@ const Watchlist = () => {
   };
 
   return (
-    <section id="watchlistSection">
-      <h1>Your Watchlist</h1>
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      
-      {watchlistMovies.length === 0 ? (
-        <p>No movies in your watchlist!</p>
-      ) : (
-        <div className="movie-list">
-          {watchlistMovies.map((movie) => (
-            <WatchlistCard
-              key={movie.movieId}
-              movie={movie}
-              removeFromWatchlist={removeFromWatchlist}
-              addToSeenItList={addToSeenItList}
-              extraInfo={
-                <p>Priority: {movie.priority}</p>
-              }
-            />
-          ))}
-        </div>
-      )}
-    </section>
-  );
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <h1 className="text-3xl font-bold text-gray-900 mb-6">Your Watchlist</h1>
+    
+    {error && (
+      <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6">
+        Error: {error}
+      </div>
+    )}
+    
+    {watchlistMovies.length === 0 ? (
+      <div className="text-center py-16 bg-gray-50 rounded-lg border border-gray-100">
+        <p className="text-lg text-gray-600">No movies in your watchlist!</p>
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {watchlistMovies.map((movie) => (
+          <WatchlistCard
+            key={movie?.movieId}
+            movie={movie}
+            removeFromWatchlist={removeFromWatchlist}
+            addToSeenItList={addToSeenItList}
+            extraInfo={
+              <p className="text-gray-600 mt-1">Priority: {movie.priority}</p>
+            }
+          />
+        ))}
+      </div>
+    )}
+  </section>
+);
 };
 
 export default Watchlist;
