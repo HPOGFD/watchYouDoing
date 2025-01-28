@@ -1,71 +1,62 @@
-import type React from 'react';
+// pages/seen.tsx
 import { useEffect, useState } from 'react';
-import FilmsAlreadySeen from '../components/FilmsAlreadySeen';
-import type Film from '../utils/interfaces/Film.interface';
+import { retrieveSeenMovies } from '../../src/api/seen';
+import FilmCard from '../components/movieCard'; // Ensure this is the correct import
+import { SeenData } from '../utils/interfaces/seenData';
 
-const SeenIt = () => {
-  const [alreadyWatchedFilms, setAlreadyWatchedFilms] = useState<Film[]>([]);
-
-  const removeFromStorage = (
-    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-    currentlyOnWatchList: boolean | null | undefined,
-    currentlyOnSeenItList: boolean | null | undefined,
-    title: string | null
-  ) => {
-    e.preventDefault();
-    if (currentlyOnWatchList) {
-      console.log(title);
-      let parsedFilmsToWatch: Film[] = [];
-
-      const storedFilmsToWatch = localStorage.getItem('filmsToWatch');
-      if (typeof storedFilmsToWatch === 'string') {
-        parsedFilmsToWatch = JSON.parse(storedFilmsToWatch);
-      }
-      parsedFilmsToWatch = parsedFilmsToWatch.filter(
-        (film) => film.Title !== title
-      );
-      localStorage.setItem('filmsToWatch', JSON.stringify(parsedFilmsToWatch));
-    } else if (currentlyOnSeenItList) {
-      let parsedAlreadySeenFilms: Film[] = [];
-      const storedAlreadySeenFilms = localStorage.getItem('alreadySeenFilms');
-      if (typeof storedAlreadySeenFilms === 'string') {
-        parsedAlreadySeenFilms = JSON.parse(storedAlreadySeenFilms);
-      }
-
-      parsedAlreadySeenFilms = parsedAlreadySeenFilms.filter(
-        (film) => film.Title !== title
-      );
-
-      setAlreadyWatchedFilms(parsedAlreadySeenFilms);
-      localStorage.setItem(
-        'alreadySeenFilms',
-        JSON.stringify(parsedAlreadySeenFilms)
-      );
-    }
-  };
+const SeenPage = () => {
+  const [seenMovies, setSeenMovies] = useState<SeenData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const parsedAlreadyWatchedFilms = JSON.parse(
-      localStorage.getItem('alreadySeenFilms') as string
-    );
-    setAlreadyWatchedFilms(parsedAlreadyWatchedFilms);
+    const fetchMovies = async () => {
+      try {
+        const movies = await retrieveSeenMovies();
+        setSeenMovies(movies);
+      } catch (err) {
+        console.error('Error fetching seen movies:', err); // Log the error for debugging
+        setError(err instanceof Error ? err.message : 'Failed to fetch movies');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMovies();
   }, []);
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <>
-      <h1 className='pageHeader'>Seen It</h1>
-      {(!alreadyWatchedFilms?.length || alreadyWatchedFilms.length === 0) ? (
-        <h1 style={{ margin: '16px 0' }}>
-          Add films you've already seen here.
-        </h1>
-      ) : (
-        <FilmsAlreadySeen
-          alreadyWatchedFilms={alreadyWatchedFilms}
-          removeFromStorage={removeFromStorage}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {seenMovies.map((movie) => (
+        <FilmCard
+          key={movie.movieId}
+          movie={{
+            ...movie,
+            title: movie.title || `Movie ${movie.movieId}`, // Fallback title if not provided
+          }}
+          onSeenItList={() => true}
+          onWatchList={() => false}
+          addToWatchlist={() => {}}
+          addToSeenItList={() => {}}
+          removeFromStorage={() => {
+            console.log(`Remove movie ${movie.movieId}`);
+          }}
+          extraInfo={
+            <>
+              {movie.viewedDate && (
+                <p>Viewed on: {new Date(movie.viewedDate).toLocaleDateString()}</p>
+              )}
+              {movie.rating !== undefined && <p>Rating: {movie.rating}/10</p>}
+              {movie.comment && <p>Comment: {movie.comment}</p>}
+            </>
+          }
         />
-      )}
-    </>
+      ))}
+    </div>
   );
 };
 
-export default SeenIt;
+export default SeenPage;
