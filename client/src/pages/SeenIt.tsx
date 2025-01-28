@@ -1,7 +1,7 @@
 // pages/seen.tsx
 import { useEffect, useState } from 'react';
 import { retrieveSeenMovies, removeSeenMovie } from '../../src/api/seen';
-import FilmCard from '../components/movieCard'; // Ensure this is the correct import
+import MovieSeenCard from '../components/SeenCard'; // Ensure this is the correct import
 import { SeenData } from '../utils/interfaces/seenData';
 
 const SeenPage = () => {
@@ -41,7 +41,7 @@ const SeenPage = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {seenMovies.map((movie) => (
-        <FilmCard
+        <MovieSeenCard
           key={movie.movieId}
           movie={{
             ...movie,

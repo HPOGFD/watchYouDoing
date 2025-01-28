@@ -6,4 +6,5 @@ export interface SeenData {
   title?: string; // Add this
   posterPath?: string; // Add this
   poster?: string; // Add this
+  
 }

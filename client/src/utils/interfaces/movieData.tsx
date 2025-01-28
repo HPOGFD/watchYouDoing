@@ -7,4 +7,5 @@ export interface MovieData {
   streamingStatus: string;
   status: 'seen' | 'watchlist';
   poster: string;
+  
 }
