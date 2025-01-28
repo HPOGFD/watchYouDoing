@@ -7,6 +7,8 @@ import FilmSearch from './pages/FilmSearch.tsx';
 import WatchList from './pages/WatchList.tsx';
 import SeenIt from './pages/SeenIt.tsx';
 import ErrorPage from './pages/ErrorPage.tsx';
+import Login from './pages/Login.tsx';
+import SignUp from './pages/SignUp.tsx';
 
 const router = createBrowserRouter([
   {
@@ -16,7 +18,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <FilmSearch />,
+        element: <Login />,
       },
       {
         path: '/WatchList',
@@ -25,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: '/SeenIt',
         element: <SeenIt />,
+      },
+      {
+        path: '/FilmSearch',
+        element: <FilmSearch/>,
+      },
+      {
+        path: '/SignUp',
+        element: <SignUp/>,
       },
     ],
   },

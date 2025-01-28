@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Index from '../../models/index'; // Assuming 'Index' is your Movie model
+import Index from '../../models/index.js'; // Assuming 'Index' is your Movie model
 
 const movieRouter = Router();
 

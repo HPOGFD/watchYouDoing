@@ -45,6 +45,18 @@ const Nav = () => {
             </Link>
           </h2>
         </li>
+        <li className='nav-item'>
+          <h2>
+            <Link
+              to='/SignUp'
+              className={
+                currentPage === '/SignUp' ? 'nav-link active' : 'nav-link'
+              }
+            >
+              SIGN UP
+            </Link>
+          </h2>
+        </li>
       </ul>
     </nav>
   );

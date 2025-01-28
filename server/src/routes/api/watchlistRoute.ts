@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Watchlist } from '../../models/watchList';
+import { Watchlist } from '../../models/watchList.js';
 
 const watchlistRouter = Router();
 

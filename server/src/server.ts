@@ -1,5 +1,7 @@
 import express from 'express';
-
+import dotenv from 'dotenv';
+dotenv.config();
+import routes from './routes/index.js';
 // Import the connection object
 import sequelize from './config/connection.js';
 
@@ -7,6 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use(routes);
 app.use(express.urlencoded({ extended: true }));
 
 // Connect to the database before starting the Express.js server
