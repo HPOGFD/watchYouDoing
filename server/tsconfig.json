@@ -2,12 +2,20 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     /* Modules */
-    "rootDir": "src" /* Specify the root folder within your source files. */,
+    "rootDir": "src",
+    "outDir": "dist",
+
+    /* Module Resolution */
+    "moduleResolution": "node",
+    "esModuleInterop": true, // Ensure compatibility with CommonJS modules
+    "resolveJsonModule": true, // Allow importing .json files if needed
 
     /* Emit */
-    "outDir": "dist" /* Specify an output folder for all emitted files. */
-    // "noEmitOnError": true /* Disable emitting files if any type checking errors are reported. */
+    "strict": true, // Enable strict type checking
+    "skipLibCheck": true, // Speed up the build process by skipping library checks
+    "sourceMap": true // Generate source maps for debugging
   },
-  "include": ["src"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
   "typeRoots": ["./node_modules/@types", "./src/types"]
 }
