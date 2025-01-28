@@ -41,6 +41,8 @@ const searchMoviesAPI = async (movieTitle: string): Promise<MovieData> => {
     streamingStatus: data.BoxOffice || "N/A",
     status: 'watchlist',
     poster: data.Poster // Add the poster URL here
+    ,
+    availablePlatforms: []
   };
   console.log('Formatted movie data:', formattedData);
   return formattedData;

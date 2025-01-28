@@ -73,7 +73,7 @@ const MovieSearch = () => {
         onSeenItList={() => false}
         onWatchList={() => true}
         addToWatchlist={addToWatchlist}
-        extraInfo={<> {currentFilm.streamingStatus && <p style={{ color: 'red' }}>Streaming on: {currentFilm.streamingStatus}</p>} </>}
+        extraInfo={<> {<p style={{ color: 'red' }}>Streaming on NETFLIX: {currentFilm.streamingStatus}</p>} </>}
       />
     </>
   );
