@@ -35,34 +35,6 @@ const MovieSearch = () => {
     }
   };
 
-  const addToSeenItList = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      console.log('Adding to seen list:', currentFilm);
-      await fetch('/api/seen', { method: 'POST', body: JSON.stringify(currentFilm) });
-      console.log('Movie successfully added to seen list!');
-    } catch (error) {
-      console.error('Error in addToSeenItList:', error);
-      setError('Error adding movie to seen list');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeFromStorage = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      console.log('Removing from storage:', currentFilm);
-      console.log('Movie successfully removed from storage!');
-    } catch (error) {
-      console.error('Error in removeFromStorage:', error);
-      setError('Error removing movie from storage');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const searchForMovieByTitle = async (event: FormEvent, movieTitle: string) => {
     event.preventDefault();
@@ -99,8 +71,6 @@ const MovieSearch = () => {
         movie={currentFilm}
         onSeenItList={() => false}
         onWatchList={() => true}
-        addToSeenItList={addToSeenItList}
-        removeFromStorage={removeFromStorage}
         addToWatchlist={addToWatchlist}
         extraInfo={<></>} // Add an empty JSX element or some additional info if needed
       />

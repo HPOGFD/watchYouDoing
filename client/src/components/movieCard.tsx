@@ -7,8 +7,6 @@ interface FilmCardProps {
   onSeenItList: () => boolean;
   onWatchList: () => boolean;
   addToWatchlist: () => void;
-  addToSeenItList: () => void;
-  removeFromStorage: () => void;
   extraInfo: JSX.Element;
 }
 
