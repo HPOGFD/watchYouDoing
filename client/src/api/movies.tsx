@@ -1,12 +1,8 @@
 import { MovieData } from "../utils/interfaces/movieData";
-import * as dotenv from 'dotenv';
 
 const searchMoviesAPI = async (movieTitle: string): Promise<MovieData> => {
-  // Load environment variables from .env file
-  dotenv.config();
-
-  // Get the API key from .env
-  const API_KEY = process.env.API_KEY;
+  // Get the API key from the environment
+  const API_KEY = import.meta.env.VITE_API_KEY
   if (!API_KEY) {
     console.error('API key is missing. Please check your .env file.');
     throw new Error('API key is missing. Please check your .env file.');
@@ -14,14 +10,13 @@ const searchMoviesAPI = async (movieTitle: string): Promise<MovieData> => {
 
   // Construct the API URL
   const url = `https://www.omdbapi.com/?t=${encodeURIComponent(movieTitle)}&apikey=${API_KEY}`;
-  console.log('Fetching data from URL:', url); // Log the URL being called
+  console.log('Fetching data from URL:', url);
 
   try {
     // Fetch data from OMDB API
     const response = await fetch(url);
-    console.log('Response status:', response.status); // Log the response status
+    console.log('Response status:', response.status);
 
-    // Check if the response is OK
     if (!response.ok) {
       console.error(`HTTP error! Status: ${response.status}`);
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -29,15 +24,14 @@ const searchMoviesAPI = async (movieTitle: string): Promise<MovieData> => {
 
     // Parse the JSON data
     const data = await response.json();
-    console.log('API response data:', data); // Log the raw API response
+    console.log('API response data:', data);
 
-    // Check if the API returned an error
     if (data.Response === 'False') {
       console.error('API error:', data.Error || 'Failed to fetch movie data');
       throw new Error(data.Error || 'Failed to fetch movie data');
     }
 
-    // Return the formatted movie data
+    // Format and return the movie data
     const formattedData: MovieData = {
       id: data.imdbID,
       title: data.Title,
@@ -47,11 +41,11 @@ const searchMoviesAPI = async (movieTitle: string): Promise<MovieData> => {
       streamingStatus: data.BoxOffice || "N/A",
       status: 'watchlist'
     };
-    console.log('Formatted movie data:', formattedData); // Log the formatted data
+    console.log('Formatted movie data:', formattedData);
     return formattedData;
   } catch (error) {
-    console.error('Error in searchMoviesAPI:', error); // Log any unexpected errors
-    throw error; // Re-throw the error to handle it in the calling function
+    console.error('Error in searchMoviesAPI:', error);
+    throw error;
   }
 };
 

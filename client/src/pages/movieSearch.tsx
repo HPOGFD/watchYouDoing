@@ -4,35 +4,43 @@ import FilmCard from '../components/movieCard';
 import { MovieData } from '../utils/interfaces/movieData';
 
 const MovieSearch = () => {
-  const [currentFilm, setCurrentFilm] = useState<MovieData>({ id : '', title: '', genre: '', description: '', releaseDate: '', streamingStatus: '', status: 'watchlist' });
+  const [currentFilm, setCurrentFilm] = useState<MovieData>({
+    id: '',
+    title: '',
+    genre: '',
+    description: '',
+    releaseDate: '',
+    streamingStatus: '',
+    status: 'watchlist',
+  });
   const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const addToWatchlist = async () => {
     try {
-      // Replace this with your actual API request
+      console.log('Adding to watchlist:', currentFilm);
       const response = await fetch(`/api/watchlist/${currentFilm.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-  
+
       if (!response.ok) {
         throw new Error('Error adding movie to watchlist');
       }
-      console.log('Movie added to watchlist!');
+      console.log('Movie successfully added to watchlist!');
     } catch (error) {
       console.error('Error in addToWatchlist:', error);
     }
   };
-  
 
   const addToSeenItList = async () => {
     setLoading(true);
     setError(null);
     try {
+      console.log('Adding to seen list:', currentFilm);
       await fetch('/api/seen', { method: 'POST', body: JSON.stringify(currentFilm) });
-      console.log('Movie added to seen list!');
+      console.log('Movie successfully added to seen list!');
     } catch (error) {
       console.error('Error in addToSeenItList:', error);
       setError('Error adding movie to seen list');
@@ -45,8 +53,8 @@ const MovieSearch = () => {
     setLoading(true);
     setError(null);
     try {
-      // Implement logic to remove movie from storage
-      console.log('Movie removed from storage');
+      console.log('Removing from storage:', currentFilm);
+      console.log('Movie successfully removed from storage!');
     } catch (error) {
       console.error('Error in removeFromStorage:', error);
       setError('Error removing movie from storage');
@@ -59,8 +67,10 @@ const MovieSearch = () => {
     event.preventDefault();
     setLoading(true);
     setError(null);
+    console.log('Searching for movie:', movieTitle);
     try {
       const data: MovieData = await searchMoviesAPI(movieTitle);
+      console.log('Movie data retrieved:', data);
       setCurrentFilm(data);
     } catch (error) {
       console.error('Error fetching movie data:', error);
@@ -73,7 +83,13 @@ const MovieSearch = () => {
   return (
     <>
       <form onSubmit={(event) => searchForMovieByTitle(event, searchInput)}>
-        <input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
+        <input
+          value={searchInput}
+          onChange={(e) => {
+            console.log('Search input updated:', e.target.value);
+            setSearchInput(e.target.value);
+          }}
+        />
         <button type="submit" disabled={loading}>Search</button>
       </form>
       {loading && <p>Loading...</p>}
@@ -90,4 +106,5 @@ const MovieSearch = () => {
     </>
   );
 };
+
 export default MovieSearch;
