@@ -16,7 +16,6 @@ const FilmCard: React.FC<FilmCardProps> = ({
   movie,
   onSeenItList,
   onWatchList,
-  addToSeenItList,
   addToWatchlist,
   extraInfo,
 }) => {
@@ -62,15 +61,12 @@ const FilmCard: React.FC<FilmCardProps> = ({
     {!onSeenItList() && !onWatchList() && (
       <>
         <button onClick={addToWatchlist}>Add to Watchlist</button>
-        <button onClick={addToSeenItList}>Add to Seen It List</button>
+        
       </>
     )}
     {(onSeenItList() || onWatchList()) && (
       <div>
-       
-        <button onClick={addToSeenItList}>
-          Add to seen {onSeenItList() ? 'Seen It List' : 'Watchlist'}
-        </button>
+      
         <button onClick={addToWatchlist}>
           Add to {onSeenItList() ? 'Seen It List' : 'Watchlist'}
         </button>
