@@ -21,11 +21,11 @@ const MovieSearch = () => {
   const addToWatchlist = async () => {
     try {
       console.log('Adding to watchlist:', currentFilm);
-      const response = await fetch(`/api/watchlist/${currentFilm.id}`, {
+      const response = await fetch(`http://localhost:3001/api/watchlist/${currentFilm.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-
+      
       if (!response.ok) {
         throw new Error('Error adding movie to watchlist');
       }
@@ -34,6 +34,7 @@ const MovieSearch = () => {
       console.error('Error in addToWatchlist:', error);
     }
   };
+  
 
 
   const searchForMovieByTitle = async (event: FormEvent, movieTitle: string) => {
