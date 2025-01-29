@@ -1,31 +1,33 @@
-import Movie from '../models';
+import { Movie } from '../models/index.js';
 
-
-const movieSeed = async () => {
-  await Movie.bulkCreate([
-    {
-      title: 'Inception',
-      genre: 'Sci-Fi',
-      description: 'A skilled thief is given a chance at redemption if he can successfully perform an inception.',
-      releaseDate: '2010-07-16',
-      streamingStatus: 'Available on Netflix',
-    },
-    {
-      title: 'The Matrix',
-      genre: 'Action',
-      description: 'A hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
-      releaseDate: '1999-03-31',
-      streamingStatus: 'Available on HBO Max',
-    },
-    {
-      title: 'The Dark Knight',
-      genre: 'Action',
-      description: 'When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.',
-      releaseDate: '2008-07-18',
-      streamingStatus: 'Available on Disney+',
-    },
-  ]);
-  console.log('Movies seeded!');
+export const seedMovies = async () => {
+  await Movie.bulkCreate(
+    [
+      {
+        title: 'Inception',
+        genre: 'Sci-Fi',
+        description: 'A thief who enters the dreams of others to steal secrets from their subconscious.',
+        releaseDate: '2010-07-16',
+        streamingStatus: 'Available',
+        status: 'seen'
+      },
+      {
+        title: 'The Shawshank Redemption',
+        genre: 'Drama',
+        description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+        releaseDate: '1994-09-23',
+        streamingStatus: 'Available',
+        status: 'watchlist'
+      },
+      {
+        title: 'The Dark Knight',
+        genre: 'Action',
+        description: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.',
+        releaseDate: '2008-07-18',
+        streamingStatus: 'Available',
+        status: 'seen'
+      }
+    ],
+    { individualHooks: true }
+  );
 };
-
-export default movieSeed;

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { SeenIt } from '../../models/seenIt.js';
+import { SeenIt } from '../../models/seen.js';
 
 const seenItRouter = Router();
 

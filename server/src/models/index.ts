@@ -1,48 +1,22 @@
-import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/connection.js';
+import { Movie, initModel as initMovieModel } from './movie.js';
+import { SeenIt, initModel as initSeenItModel } from './seen.js';
+import { WatchList, initModel as initWatchlistModel } from './watchlist.js';
+import { UserFactory, } from './user.js';
 
-class Index extends Model {
-  public id!: number;
-  public title!: string;
-  public genre!: string;
-  public description!: string;
-  public releaseDate!: string;
-  public streamingStatus!: string;
-}
+const User = UserFactory(sequelize);
+// Initialize all models with the sequelize instance
+initMovieModel(sequelize);
+initSeenItModel(sequelize);
+initWatchlistModel(sequelize);
 
-Index.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    genre: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    releaseDate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    streamingStatus: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-  },
-  {
-    sequelize,
-    modelName: 'Movies', // The table name can be "Movies" or "Index" depending on preference
-  }
-);
+// Set up associations
+// Movie has many SeenIt records
+Movie.hasMany(SeenIt, { foreignKey: 'movieId' });
+SeenIt.belongsTo(Movie, { foreignKey: 'movieId', as: 'seenMovie' });
 
-// Ensure you export your model
-export default Index; // Use default export
+// Movie has many Watchlist records
+Movie.hasMany(WatchList, { foreignKey: 'movieId' });
+WatchList.belongsTo(Movie, { foreignKey: 'movieId', as: 'watchlistMovie' });
+
+export { sequelize, Movie, SeenIt, WatchList, User };

@@ -1,46 +1,60 @@
 import { Router } from 'express';
-import { Watchlist } from '../../models/watchList.js';
+import { WatchList } from '../../models/index.js';
 
-const watchlistRouter = Router();
+const router = Router();
 
-// GET all items in the watchlist
-watchlistRouter.get('/', async (_req, res) => {
+/**
+ * GET /watchlist
+ * Fetch all movies from the watchlist
+ */
+router.get('/', async (_req, res) => {
   try {
-    const watchlist = await Watchlist.findAll(); // Fetch all watchlist items
-    res.status(200).json(watchlist);
+    const watchlistMovies = await WatchList.findAll({
+      attributes: ['movieId', 'dateAdded', 'priority', 'notes'],
+    });
+
+    // Convert Sequelize instances to plain objects
+    const plainWatchlistMovies = watchlistMovies.map(movie => movie.get({ plain: true }));
+
+    console.log('Executing: SELECT "movieId", "dateAdded", "priority", "notes" FROM "WatchLists" AS "WatchList";');
+    console.log('Fetched watchlist movies:', plainWatchlistMovies);
+
+    res.status(200).json(plainWatchlistMovies);
   } catch (error) {
-    console.error('Error fetching watchlist:', error);
-    res.status(500).json({ message: 'Failed to fetch watchlist items.' });
+    console.error('Error fetching watchlist movies:', error);
+    res.status(500).json({ error: 'Unable to fetch watchlist movies' });
   }
 });
 
-// POST a new item to the watchlist
-watchlistRouter.post('/', async (req, res) => {
-  try {
-    const { movieId } = req.body; // Assuming a movieId is sent
-    const newWatchlistItem = await Watchlist.create({ movieId });
-    res.status(201).json(newWatchlistItem);
-  } catch (error) {
-    console.error('Error adding to watchlist:', error);
-    res.status(500).json({ message: 'Failed to add item to watchlist.' });
-  }
-});
 
-// DELETE an item from the watchlist by its ID
-watchlistRouter.delete('/:id', async (req, res) => {
+/**
+ * DELETE /watchlist/:movieId
+ * Remove a movie from the watchlist
+ */
+router.delete('/:movieId', async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await Watchlist.destroy({ where: { id } });
+    const { movieId } = req.params;
+    console.log(`Attempting to delete movie with ID ${movieId} from watchlist`);
 
-    if (deleted) {
-      res.status(200).json({ message: 'Item removed from watchlist.' });
-    } else {
-      res.status(404).json({ message: 'Item not found.' });
+    const deletedCount = await WatchList.destroy({
+      where: { movieId: movieId }
+    });
+
+    console.log(`Executing: DELETE FROM "WatchLists" WHERE "movieId" = ${movieId}`);
+    console.log(`Deleted count: ${deletedCount}`);
+
+    if (deletedCount === 0) {
+      console.log(`Movie with ID ${movieId} not found in watchlist`);
+      return res.status(404).json({ message: 'Movie not found in watchlist' });
     }
+
+    console.log(`Successfully removed movie with ID ${movieId} from watchlist`);
+    return res.status(200).json({ message: 'Movie removed from watchlist successfully' });
   } catch (error) {
-    console.error('Error deleting from watchlist:', error);
-    res.status(500).json({ message: 'Failed to delete item from watchlist.' });
+    console.error('Error removing movie from watchlist:', error);
+    return res.status(500).json({ error: 'Unable to remove movie from watchlist' });
   }
 });
 
-export default watchlistRouter;
+
+export default router;
