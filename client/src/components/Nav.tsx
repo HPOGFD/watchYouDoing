@@ -1,7 +1,34 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { NavLink, Link } from 'react-router-dom';
+import AuthService from '../utils/auth';
 
 const Nav = () => {
-  const currentPage = useLocation().pathname;
+  const [loginCheck, setLoginCheck] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const checkLogin = useCallback(() => {
+    const isLoggedIn = AuthService.loggedIn();
+    setLoginCheck(isLoggedIn);
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    checkLogin();
+
+    const handleStorageChange = () => {
+      checkLogin();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [checkLogin]);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or any loading indicator
+  }
 
   return (
     <nav>
@@ -13,38 +40,45 @@ const Nav = () => {
       <ul className='nav nav-tabs'>
         <li className='nav-item'>
           <h2>
-            <Link
-              to='/'
-              className={currentPage === '/' ? 'nav-link active' : 'nav-link'}
-            >
+            <NavLink to='/' className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} end>
               HOME
-            </Link>
+            </NavLink>
           </h2>
         </li>
         <li className='nav-item'>
           <h2>
-            <Link
-              to='/WatchList'
-              className={
-                currentPage === '/WatchList' ? 'nav-link active' : 'nav-link'
-              }
-            >
+            <NavLink to='/watchList' className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
               WATCH LIST
-            </Link>
+            </NavLink>
           </h2>
         </li>
         <li className='nav-item'>
           <h2>
-            <Link
-              to='/SeenIt'
-              className={
-                currentPage === '/SeenIt' ? 'nav-link active' : 'nav-link'
-              }
-            >
+            <NavLink to='/seenIt' className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
               SEEN IT
-            </Link>
+            </NavLink>
           </h2>
         </li>
+        {
+          !loginCheck ? (
+            <li className='nav-item'>
+              <h2>
+                <NavLink to='/login' className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                  LOGIN
+                </NavLink>
+              </h2>
+            </li>
+          ) : (
+            <li className='nav-item'>
+              <h2>
+                <button type='button' onClick={() => {
+                  AuthService.logout();
+                  setLoginCheck(false);
+                }} className='nav-link'>LOGOUT</button>
+              </h2>
+            </li>
+          )
+        }
       </ul>
     </nav>
   );

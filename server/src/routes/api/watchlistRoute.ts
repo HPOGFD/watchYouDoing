@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { WatchList } from '../../models/index.js';
+import { SeenIt } from '../../models/seen.js';
 
 const router = Router();
 
@@ -53,6 +54,37 @@ router.delete('/:movieId', async (req, res) => {
   } catch (error) {
     console.error('Error removing movie from watchlist:', error);
     return res.status(500).json({ error: 'Unable to remove movie from watchlist' });
+  }
+});
+
+// Add movie from watchlist to seen list
+router.post('/move-to-seen/:movieId', async (req, res) => {
+  const { movieId } = req.params;
+
+  try {
+    // Fetch movie from WatchList
+    const movie = await WatchList.findOne({ where: { movieId } });
+
+    if (!movie) {
+      return res.status(404).json({ error: 'Movie not found in watchlist' });
+    }
+
+    // Create the movie in SeenList table (move to Seen It)
+    await SeenIt.create({
+      movieId: movie.movieId,
+      viewedDate: new Date(), // You can pass additional data as needed
+      rating: movie.rating,
+      comment: movie.comment,
+    });
+
+    // Optionally, remove it from the watchlist
+    await movie.destroy();
+
+    console.log(`Movie ${movieId} moved to seen list`);
+    return res.status(200).json({ message: `Movie ${movieId} successfully added to Seen It` });
+  } catch (error) {
+    console.error('Error moving movie to seen list:', error);
+    return res.status(500).json({ error: 'Unable to move movie to seen list' });
   }
 });
 

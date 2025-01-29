@@ -6,4 +6,6 @@ export interface MovieData {
   releaseDate: string;
   streamingStatus: string;
   status: 'seen' | 'watchlist';
+  poster: string;
+  availablePlatforms: string[];
 }

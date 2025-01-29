@@ -7,6 +7,7 @@ import FilmSearch from './pages/movieSearch.tsx';
 import WatchList from './pages/WatchList.tsx';
 import SeenIt from './pages/SeenIt.tsx';
 import ErrorPage from './pages/ErrorPage.tsx';
+import Login from './pages/login.tsx';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
         path: '/seenIt',
         element: <SeenIt />,
       },
+      {
+        path: '/login',
+        element: <Login />
+      }
     ],
   },
 ]);

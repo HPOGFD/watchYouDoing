@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { searchMoviesAPI } from '../api/movies';
+import { searchMoviesAPI } from '../api/movies'; // Use the new function
 import FilmCard from '../components/movieCard';
 import { MovieData } from '../utils/interfaces/movieData';
 
@@ -12,6 +12,8 @@ const MovieSearch = () => {
     releaseDate: '',
     streamingStatus: '',
     status: 'watchlist',
+    poster: '',
+    availablePlatforms: [], // Added the missing property
   });
   const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,9 +22,10 @@ const MovieSearch = () => {
   const addToWatchlist = async () => {
     try {
       console.log('Adding to watchlist:', currentFilm);
-      const response = await fetch(`/api/watchlist/${currentFilm.id}`, {
+      const response = await fetch(`http://localhost:3001/api/watchlist/${currentFilm.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentFilm),
       });
 
       if (!response.ok) {
@@ -34,42 +37,13 @@ const MovieSearch = () => {
     }
   };
 
-  const addToSeenItList = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      console.log('Adding to seen list:', currentFilm);
-      await fetch('/api/seen', { method: 'POST', body: JSON.stringify(currentFilm) });
-      console.log('Movie successfully added to seen list!');
-    } catch (error) {
-      console.error('Error in addToSeenItList:', error);
-      setError('Error adding movie to seen list');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeFromStorage = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      console.log('Removing from storage:', currentFilm);
-      console.log('Movie successfully removed from storage!');
-    } catch (error) {
-      console.error('Error in removeFromStorage:', error);
-      setError('Error removing movie from storage');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const searchForMovieByTitle = async (event: FormEvent, movieTitle: string) => {
     event.preventDefault();
     setLoading(true);
     setError(null);
     console.log('Searching for movie:', movieTitle);
     try {
-      const data: MovieData = await searchMoviesAPI(movieTitle);
+      const data: MovieData = await searchMoviesAPI(movieTitle); // Fetch movie with streaming data
       console.log('Movie data retrieved:', data);
       setCurrentFilm(data);
     } catch (error) {
@@ -98,10 +72,8 @@ const MovieSearch = () => {
         movie={currentFilm}
         onSeenItList={() => false}
         onWatchList={() => true}
-        addToSeenItList={addToSeenItList}
-        removeFromStorage={removeFromStorage}
         addToWatchlist={addToWatchlist}
-        extraInfo={<></>} // Add an empty JSX element or some additional info if needed
+        extraInfo={<> {<p style={{ color: 'red' }}>Streaming on NETFLIX: {currentFilm.streamingStatus}</p>} </>}
       />
     </>
   );

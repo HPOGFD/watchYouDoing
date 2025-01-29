@@ -5,6 +5,8 @@ class WatchList extends Model {
   dateAdded!: Date;
   priority!: string;
   notes!: string;
+  rating!: number;
+  comment!: string;  // Add the comment field here
 }
 
 // Initialize model
@@ -32,6 +34,14 @@ const initModel = (sequelizeInstance: Sequelize) => {
       notes: {
         type: DataTypes.TEXT,
         allowNull: true,
+      },
+      rating: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      comment: {  // Define the comment field here
+        type: DataTypes.TEXT,
+        allowNull: true, // If optional, set it to true, otherwise false
       },
     },
     {
