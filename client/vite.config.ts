@@ -11,14 +11,14 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         '/api': {
-          target: 'http://localhost:3001',
+          target: 'https://watchyoudoing.onrender.com',
           changeOrigin: true,
           secure: false,
         },
       },
     },
     define: {
-      'process.env': env
+      'process.env': env,
     },
   };
 });
